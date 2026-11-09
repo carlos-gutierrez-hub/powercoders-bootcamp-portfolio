@@ -93,7 +93,7 @@
    Step 2: set ENDPOINT to the Apps Script web app URL and the page
    asks Google for the live JSON first, falling back to the snapshot.
    ------------------------------------------------------------------ */
-const ENDPOINT = "";             // e.g. https://script.google.com/macros/s/AKfy…/exec
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyUwaTaMs9FA2_Uxf-tedmAq-PX54Q1xfGO8Nc5VKfSEZCTUC6m9luHq60Ki4son9Xn-g/exec";
 const SNAPSHOT = "data/datos.json";
 
 const pct = (a, b) => (b ? Math.round((100 * a) / b) : 0);
@@ -114,7 +114,7 @@ function ring(color, value, size = 80, stroke = 8) {
   </svg>`;
 }
 
-function jsonp(url, timeout = 4000) {
+function jsonp(url, timeout = 6000) {
   return new Promise(resolve => {
     const s = document.createElement("script");
     const t = setTimeout(() => resolve(null), timeout);
