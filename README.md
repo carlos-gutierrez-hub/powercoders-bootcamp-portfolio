@@ -58,6 +58,7 @@ The Task Tracker data lives in the Roadmap Tracker workbook (58 tasks across 6 c
 ## Status
 
 - ✅ Roadmap defined (5 Nov 2026)
+- ✅ Dashboard Excel v2 finalized with dynamic formulas and data bars (9 Nov 2026)
 - 🔄 Portfolio under construction (Nov 2026)
 - 🎯 Application window: 1 – 5 Dec 2026
 
