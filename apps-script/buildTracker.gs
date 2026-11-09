@@ -2,14 +2,21 @@
  * buildTracker.gs — one-time migration of the Excel tracker to Google Sheets.
  *
  * HOW TO USE
- *  1. Create a new spreadsheet in Google Drive ("Roadmap Tracker · web").
- *  2. Extensions → Apps Script, delete the placeholder and paste this whole file.
- *  3. Save (Ctrl+S) and run buildTracker() once; authorise when asked.
- *  4. Back in the spreadsheet: the "Tracker" tab is ready with one checkbox per
- *     planned day. Share it as "Anyone with the link → Viewer".
+ *  1. Extensions → Apps Script, replace the whole content of this file.
+ *  2. Save (Ctrl+S), then run buildTracker() once and authorise.
+ *  3. Check the execution log: it must say "Grid OK ... 67 columns,
+ *     25.10.2026 → 30.12.2026". If it throws, do not deploy: send the message.
+ *  4. Share the spreadsheet as "Anyone with the link → Viewer".
  *
- * Code.gs (the JSON endpoint) reads this sheet; nothing else is stored here.
- * If you change start/end dates, run refreshCheckboxes() to rebuild the grid.
+ * DATES AND DAYLIGHT SAVING
+ *  The horizon starts on 25 Oct 2026, the day the clocks change in Switzerland
+ *  (that day has 25 hours). Adding 86 400 000 ms per column therefore lands at
+ *  23:00 of the day before and duplicates a date, which shortens the grid by
+ *  one day and pushes every header out of step.
+ *  Here every date is built from calendar parts and, when the script time zone
+ *  differs from the spreadsheet time zone, parsed with Utilities in the
+ *  spreadsheet's own zone. verifyGrid_() then reads the result back and fails
+ *  loudly if the grid is not contiguous.
  */
 
 const SHEET = 'Tracker';
@@ -96,15 +103,15 @@ function buildTracker() {
 
   const days = dayCount_();
 
-  // --- header row ---------------------------------------------------------
+  // --- header row: one column per calendar day ----------------------------
   const head = [['Category', 'Task / Activity', 'Start', 'End', 'Description']];
-  for (let d = 0; d < days; d++) head[0].push(dayAt_(d));
+  for (let d = 0; d < days; d++) head[0].push(sheetDate_(dayAt_(d)));
   sh.getRange(1, 1, 1, head[0].length).setValues(head);
   sh.getRange(1, FIRST_DAY_COL, 1, days).setNumberFormat('dd.mm');
 
   // --- tasks --------------------------------------------------------------
   const body = TASKS.map(function (t) {
-    return [t[0], t[1], new Date(t[2] + 'T00:00:00'), new Date(t[3] + 'T00:00:00'), ''];
+    return [t[0], t[1], sheetDate_(fromIso_(t[2])), sheetDate_(fromIso_(t[3])), ''];
   });
   sh.getRange(2, 1, body.length, META_COLS).setValues(body);
   sh.getRange(2, 3, body.length, 2).setNumberFormat('dd.mm.yyyy');
@@ -131,6 +138,9 @@ function buildTracker() {
   sh.setColumnWidth(2, 280);
   sh.setColumnWidths(3, 2, 80);
   sh.setColumnWidths(FIRST_DAY_COL, days, 22);
+
+  // --- prove it, do not assume it ----------------------------------------
+  verifyGrid_(sh, days);
 }
 
 /** Rebuilds the checkbox grid after editing start/end dates. */
@@ -139,6 +149,7 @@ function refreshCheckboxes() {
   const days = dayCount_();
   sh.getRange(2, FIRST_DAY_COL, sh.getMaxRows() - 1, days).removeCheckboxes().clearContent();
   addCheckboxes(sh);
+  verifyGrid_(sh, days);
 }
 
 function addCheckboxes(sh) {
@@ -153,24 +164,110 @@ function addCheckboxes(sh) {
   });
 }
 
-/* --------------------------------------------------------------- helpers */
-/* Dates are built from calendar parts, never by adding 86400000 ms:
-   on a DST change day a "24 h" jump lands at 23:00 of the previous date and
-   silently shifts every header by one day. */
+/* --------------------------------------------------------------- checks */
 
-/** Date object for horizon day i (0 = HORIZON_START), DST-proof. */
+/** Reads row 1 back and fails if the grid is not one contiguous run of days. */
+function verifyGrid_(sh, days) {
+  const header = sh.getRange(1, FIRST_DAY_COL, 1, days).getValues()[0];
+  const problems = [];
+  let previous = null;
+
+  header.forEach(function (cell, i) {
+    const d = parseAny_(cell);
+    if (!d) { problems.push('column ' + (i + 1) + ' is not a date: ' + cell); return; }
+    if (previous) {
+      const step = dayDiff_(previous, d);
+      if (step === 0) problems.push('duplicated day ' + iso_(d) + ' at column ' + (i + 1));
+      if (step > 1) problems.push('gap of ' + (step - 1) + ' day(s) before ' + iso_(d));
+      if (step < 0) problems.push('out of order at ' + iso_(d));
+    }
+    previous = d;
+  });
+
+  const first = parseAny_(header[0]);
+  const last  = parseAny_(header[header.length - 1]);
+  if (first && iso_(first) !== iso_(dayAt_(0))) problems.push('first day is ' + iso_(first) + ', expected ' + iso_(dayAt_(0)));
+  if (last && iso_(last) !== iso_(dayAt_(days - 1))) problems.push('last day is ' + iso_(last) + ', expected ' + iso_(dayAt_(days - 1)));
+  if (header.length !== days) problems.push('wrote ' + header.length + ' columns, expected ' + days);
+
+  if (problems.length) {
+    throw new Error('Grid check failed — re-run buildTracker() before deploying.\n  ' +
+      problems.slice(0, 10).join('\n  '));
+  }
+
+  Logger.log('Grid OK: ' + pretty_(first) + ' -> ' + pretty_(last) +
+             ' - ' + days + ' day columns - ' + TASKS.length + ' tasks');
+  return true;
+}
+
+/* --------------------------------------------------------------- helpers */
+/* Dates are built from calendar parts, never by adding 86400000 ms: on a DST
+   change day "24 hours" is not "one day" and the grid silently shifts. */
+
+/** Date for horizon day i (0 = HORIZON_START): local midnight, DST-proof. */
 function dayAt_(i) {
   return new Date(HORIZON_START.getFullYear(), HORIZON_START.getMonth(), HORIZON_START.getDate() + i);
 }
 
-/** Number of days in the horizon, counting calendar days. */
+/** Number of calendar days in the horizon, both ends included. */
 function dayCount_() {
   return dayOffset_(HORIZON_END) + 1;
 }
 
-/** Days between HORIZON_START and a date, DST-proof. */
+/** Calendar days between HORIZON_START and a date (UTC parts, no DST). */
 function dayOffset_(date) {
-  const a = Date.UTC(HORIZON_START.getFullYear(), HORIZON_START.getMonth(), HORIZON_START.getDate());
-  const b = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+  return dayDiff_(HORIZON_START, date);
+}
+
+function dayDiff_(from, to) {
+  const a = Date.UTC(from.getFullYear(), from.getMonth(), from.getDate());
+  const b = Date.UTC(to.getFullYear(), to.getMonth(), to.getDate());
   return Math.round((b - a) / 86400000);
+}
+
+/** 'yyyy-mm-dd' → Date at local midnight, without parsing heuristics. */
+function fromIso_(s) {
+  const p = String(s).split('-');
+  return new Date(+p[0], +p[1] - 1, +p[2]);
+}
+
+/**
+ * Returns a Date whose wall-clock date, as the SPREADSHEET sees it, is the
+ * same calendar day. If the script time zone differs from the spreadsheet
+ * one, the value is rebuilt with Utilities in the spreadsheet's zone.
+ */
+function sheetDate_(d) {
+  try {
+    const ss = SpreadsheetApp.getActive();
+    const sheetTz  = ss.getSpreadsheetTimeZone();
+    const scriptTz = Session.getScriptTimeZone();
+    if (!sheetTz || !scriptTz || sheetTz === scriptTz) return d;
+    const iso = Utilities.formatDate(d, scriptTz, 'yyyy-MM-dd');
+    return Utilities.parseDate(iso + ' 00:00:00', sheetTz, 'yyyy-MM-dd HH:mm:ss');
+  } catch (e) {
+    return d;                                   // no Utilities (tests) or no context
+  }
+}
+
+/** Reads a header cell as a calendar date, whatever the cell type is. */
+function parseAny_(v) {
+  if (Object.prototype.toString.call(v) === '[object Date]' && !isNaN(v.getTime())) {
+    return new Date(v.getFullYear(), v.getMonth(), v.getDate());
+  }
+  const s = String(v == null ? '' : v).trim();
+  let m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s);
+  if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+  m = /^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})$/.exec(s);
+  if (m) { let y = +m[3]; if (y < 100) y += 2000; return new Date(y, +m[2] - 1, +m[1]); }
+  return null;
+}
+
+function iso_(d) {
+  const m = d.getMonth() + 1, day = d.getDate();
+  return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+}
+
+function pretty_(d) {
+  const m = d.getMonth() + 1, day = d.getDate();
+  return (day < 10 ? '0' : '') + day + '.' + (m < 10 ? '0' : '') + m + '.' + d.getFullYear();
 }
