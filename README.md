@@ -17,6 +17,19 @@ I am an Industrial Engineer transitioning into software development, focused on 
 
 **The evidence:** the "Task Tracker" began as a spreadsheet and will become an interactive dashboard. That evolution — Excel → HTML — is the proof of my methodology.
 
+## Dashboard data — Excel → CSV
+
+The Task Tracker data lives in the Roadmap Tracker workbook (58 tasks across 6 categories, 25 Oct – 30 Dec). Because `.xlsx` is binary, GitHub only shows it as "modified" without a readable diff. To make the **evolution of the data visible line-by-line**, the tasks are exported to a text file:
+
+- **`datos.csv`** — the 58 roadmap tasks (category, start/end date, status, progress), extracted from the Excel.
+- **`scripts/export_datos.py`** — read-only exporter (never modifies the Excel or its 17 charts).
+
+**Workflow (after each edit to the Excel):**
+
+1. Edit and save `roadmap/Roadmap Tracker Powercoders_Bootcamp_Sp_2027_v2.xlsx`.
+2. Run `python scripts/export_datos.py` (regenerates `datos.csv`).
+3. Commit both files — GitHub diffs `datos.csv` line by line (red = removed, green = added).
+
 ## Roadmap (six phases)
 
 | # | Phase | Window | Status |

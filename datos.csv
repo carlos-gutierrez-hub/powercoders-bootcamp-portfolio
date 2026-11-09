@@ -1,0 +1,59 @@
+categoria,tarea,inicio,fin,estado,progreso
+1. Discovery / Exploration,Explore Powercoders and define scope,2026-10-25,2026-10-27,Planned,0
+1. Discovery / Exploration,Install and configure tools,2026-10-25,2026-11-05,Planned,0
+1. Discovery / Exploration,Define initial Portfolio architecture,2026-10-28,2026-10-30,Planned,0
+1. Discovery / Exploration,Explore AI / No-Code / Low-Code tools,2026-10-28,2026-11-05,Planned,0
+1. Discovery / Exploration,Define Master Roadmap,2026-11-01,2026-11-05,Planned,0
+1. Discovery / Exploration,Create initial project README,2026-11-05,2026-11-05,Planned,0
+1. Discovery / Exploration,Upload Excel Roadmap + README to GitHub,2026-11-05,2026-11-05,Planned,0
+1. Discovery / Exploration,Review and delimit current CV,2026-11-06,2026-11-06,Planned,0
+2. Theory / Fundamentals,PRD — Product Requirements Document,2026-11-06,2026-11-07,Planned,0
+2. Theory / Fundamentals,User Story Mapping,2026-11-09,2026-11-10,Planned,0
+2. Theory / Fundamentals,HTML Fundamentals,2026-11-09,2026-11-11,Planned,0
+2. Theory / Fundamentals,Software Engineer Thinking / Problem Solving,2026-11-11,2026-11-12,Planned,0
+2. Theory / Fundamentals,Git / GitHub Fundamentals,2026-11-12,2026-11-13,Planned,0
+2. Theory / Fundamentals,Technical Vocabulary / Terminology,2026-11-12,2026-11-30,Planned,0
+2. Theory / Fundamentals,File Types & Formats,2026-11-14,2026-11-15,In progress,50
+2. Theory / Fundamentals,CSS Fundamentals,2026-11-15,2026-11-18,Planned,0
+2. Theory / Fundamentals,Process Mapping,2026-11-16,2026-11-17,Planned,0
+2. Theory / Fundamentals,Data Mapping / ERD,2026-11-18,2026-11-19,Planned,0
+2. Theory / Fundamentals,Solution Architecture,2026-11-19,2026-11-20,Planned,0
+2. Theory / Fundamentals,JavaScript Fundamentals,2026-11-19,2026-11-23,Planned,0
+2. Theory / Fundamentals,Automation Tools,2026-11-22,2026-11-24,Planned,0
+2. Theory / Fundamentals,Python Fundamentals,2026-11-24,2026-11-26,Planned,0
+2. Theory / Fundamentals,Workflows / Git / CI/CD / Build Concepts,2026-11-26,2026-11-28,Planned,0
+3. Web / Portfolio Construction,Export roadmap data to CSV + document evolution,2026-11-08,2026-11-08,Planned,0
+3. Web / Portfolio Construction,Hacer los últimos ajustes al documento Roadmap Tracker v2,2026-11-08,2026-11-08,Planned,0
+3. Web / Portfolio Construction,Subir o dejar evidencia en GitHub los últimos ajustes al documento Roadmap Tracker v2,2026-11-08,2026-11-08,Planned,0
+3. Web / Portfolio Construction,Dashboard Evolution: From Excel to Automated Web App,2026-11-09,2026-11-09,Planned,0
+3. Web / Portfolio Construction,Define final Portfolio concept,2026-11-06,2026-11-08,Planned,0
+3. Web / Portfolio Construction,Define maximum five tabs/pages,2026-11-06,2026-11-08,Planned,0
+3. Web / Portfolio Construction,Design initial UX/UI,2026-11-10,2026-11-12,Planned,0
+3. Web / Portfolio Construction,Dark / Light Mode,2026-11-13,2026-11-14,Planned,0
+3. Web / Portfolio Construction,Frontend implementation,2026-11-13,2026-11-22,Planned,0
+3. Web / Portfolio Construction,Prepare portfolio content,2026-11-15,2026-11-20,Planned,0
+3. Web / Portfolio Construction,Automated Contact Section,2026-11-21,2026-11-22,Planned,0
+3. Web / Portfolio Construction,CV / LinkedIn / GitHub Integration,2026-11-22,2026-11-23,Planned,0
+3. Web / Portfolio Construction,Multilingual Support,2026-11-24,2026-11-26,Planned,0
+3. Web / Portfolio Construction,Basic AI Chatbot,2026-11-26,2026-11-28,Planned,0
+3. Web / Portfolio Construction,Backend / Services,2026-11-25,2026-11-28,Planned,0
+3. Web / Portfolio Construction,Testing & Quality Review,2026-11-28,2026-11-30,Planned,0
+3. Web / Portfolio Construction,Final Documentation,2026-11-29,2026-11-30,Planned,0
+3. Web / Portfolio Construction,Deployment,2026-11-30,2026-11-30,Planned,0
+4. Professional Profile,GitHub Portfolio Organisation,2026-11-05,2026-11-30,Planned,0
+4. Professional Profile,CV — Initial St. Gallen Alignment,2026-11-06,2026-11-06,Planned,0
+4. Professional Profile,LinkedIn — Initial Alignment with CV,2026-11-06,2026-11-06,Planned,0
+4. Professional Profile,Learning Evidence Collection,2026-11-06,2026-11-30,Planned,0
+4. Professional Profile,CV — Final Refinement,2026-11-25,2026-11-27,Planned,0
+4. Professional Profile,LinkedIn — Final Refinement,2026-11-27,2026-11-28,Planned,0
+5. Application,Verify Application Requirements,2026-11-10,2026-11-11,Planned,0
+5. Application,Prepare Online Application Answers,2026-11-20,2026-11-24,Planned,0
+5. Application,Prepare Powercoders Application,2026-11-25,2026-11-28,Planned,0
+5. Application,Interview Preparation — English,2026-11-26,2026-11-30,Planned,0
+5. Application,Final Application Review,2026-12-01,2026-12-03,Planned,0
+5. Application,Submit Powercoders Application,2026-12-04,2026-12-05,Planned,0
+6. Consolidation / Continued Learning,Consolidate Fundamentals,2026-12-06,2026-12-20,Planned,0
+6. Consolidation / Continued Learning,Portfolio Review,2026-12-07,2026-12-12,Planned,0
+6. Consolidation / Continued Learning,GitHub Review,2026-12-13,2026-12-18,Planned,0
+6. Consolidation / Continued Learning,Technical Review,2026-12-19,2026-12-24,Planned,0
+6. Consolidation / Continued Learning,Roadmap Evaluation,2026-12-26,2026-12-30,Planned,0
