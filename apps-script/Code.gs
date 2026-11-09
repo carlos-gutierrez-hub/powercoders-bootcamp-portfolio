@@ -6,16 +6,10 @@
  *
  * DEPLOY
  *   1. Extensions → Apps Script (same project as buildTracker.gs) → paste this file.
- *   2. Save. Deploy → New deployment → type "Web app".
- *        Description .......... roadmap json v1
- *        Execute as ........... Me
- *        Who has access ....... Anyone
- *   3. Deploy → Authorise → copy the /exec URL.
- *   4. Test it:  <URL>/exec?pretty=1   → JSON in the browser.
- *   5. Put that URL in ENDPOINT inside web/index.html.
- *
- * After editing this file: Deploy → Manage deployments → edit → New version
- * (the URL stays the same).
+ *   2. Save. Deploy → Manage deployments → edit → Version: New version → Deploy.
+ *      (Keeps the same /exec URL.)
+ *   3. Test:  <URL>/exec?pretty=1          → the payload
+ *             <URL>/exec?debug=1&nocache=1 → what the script actually reads
  *
  * NOTE: every constant lives inside ROADMAP_JSON, so this file can sit in the
  * same Apps Script project as buildTracker.gs without duplicate declarations.
@@ -39,21 +33,22 @@ const ROADMAP_JSON = (function () {
     { name: '6. Consolidation / Continued Learning',  short: 'Consolidation', color: '#F59DBA', chart: '#F8B4CB' }
   ];
 
-  /* ------------------------------------------------------------------ entry */
+  /* ---------------------------------------------------------------- entry */
 
   function doGet(e) {
-    const params = (e && e.parameter) || {};
-    const prefix = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(params.prefix || '') ? params.prefix : null;
+    const params  = (e && e.parameter) || {};
+    const prefix  = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(params.prefix || '') ? params.prefix : null;
+    const debug   = params.debug === '1';
+    const noCache = params.nocache === '1' || debug;
 
     let payload;
     try {
-      payload = getPayload_();
+      payload = getPayload_(noCache, debug);
     } catch (err) {
-      // No "categories" key on purpose: the page then falls back to its snapshot
-      // instead of rendering an empty dashboard.
       payload = { error: String((err && err.message) || err), updated: new Date().toISOString() };
+      if (debug) payload._debug = { stack: String((err && err.stack) || '') };
     }
-    return respond_(payload, prefix, params.pretty === '1');
+    return respond_(payload, prefix, params.pretty === '1' || debug);
   }
 
   function respond_(payload, prefix, pretty) {
@@ -68,28 +63,30 @@ const ROADMAP_JSON = (function () {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  /* --------------------------------------------------------------- caching */
+  /* -------------------------------------------------------------- caching */
 
-  function getPayload_() {
+  function getPayload_(noCache, debug) {
     const cache = CacheService.getScriptCache();
-    const hit = cache.get('roadmap');
-    if (hit) return JSON.parse(hit);
-
-    const payload = computePayload_();
+    if (!noCache) {
+      const hit = cache.get('roadmap');
+      if (hit) return JSON.parse(hit);
+    }
+    const payload    = computePayload_(debug);
     const serialised = JSON.stringify(payload);
-    if (serialised.length < 95000) cache.put('roadmap', serialised, CACHE_SECONDS);
+    if (!noCache && serialised.length < 95000) cache.put('roadmap', serialised, CACHE_SECONDS);
     return payload;
   }
 
-  /** Run this from the editor to inspect the payload in the execution log. */
+  /** Run from the editor to inspect the payload in the execution log. */
   function logPayload() {
-    Logger.log(JSON.stringify(computePayload_(), null, 2));
+    Logger.log(JSON.stringify(computePayload_(true), null, 2));
   }
 
-  /* ------------------------------------------------------------- the maths */
+  /* ------------------------------------------------------------ the maths */
 
-  function computePayload_() {
-    const sh = SpreadsheetApp.getActive().getSheetByName(SHEET_NAME);
+  function computePayload_(debug) {
+    const ss = SpreadsheetApp.getActive();
+    const sh = ss.getSheetByName(SHEET_NAME);
     if (!sh) throw new Error('Sheet "' + SHEET_NAME + '" not found');
 
     const lastRow = sh.getLastRow();
@@ -99,25 +96,32 @@ const ROADMAP_JSON = (function () {
     const grid   = sh.getRange(1, 1, lastRow, lastCol).getValues();
     const header = grid[0];
 
-    // Day columns: every header cell right of the metadata that holds a date.
+    // Day columns: any header cell right of the metadata that can be read as a
+    // date. Text dates ("30.12.2026") are accepted on purpose — a header typed
+    // by hand is still a header, and silently dropping it used to shorten the
+    // whole horizon by one day.
     const dayCols = [];
+    let defaultYear = null;
     for (let c = META_COLS; c < lastCol; c++) {
-      if (isDate_(header[c])) dayCols.push(c);
+      const d = parseDate_(header[c], defaultYear);
+      if (!d) continue;
+      if (defaultYear === null) defaultYear = d.getFullYear();
+      dayCols.push({ c: c, d: d });
     }
     if (!dayCols.length) {
-      throw new Error('No date columns found in row 1 — the day headers must be real dates');
+      throw new Error('No date columns found in row 1 — the day headers must be dates or date-like text');
     }
 
-    const horizonStart = dateOnly_(header[dayCols[0]]);
-    const horizonEnd   = dateOnly_(header[dayCols[dayCols.length - 1]]);
+    const horizonStart = dayCols[0].d;
+    const horizonEnd   = dayCols[dayCols.length - 1].d;
     const lastDayIdx   = dayDiff_(horizonStart, horizonEnd);
-    const dayIndex     = d => dayDiff_(horizonStart, d);
+    const dayIndex     = function (d) { return dayDiff_(horizonStart, d); };
 
     // Week 0 begins on the Monday of the horizon's first week (the Excel grid).
-    const mondayOffset = (horizonStart.getDay() + 6) % 7;          // Monday = 0
+    const mondayOffset = (horizonStart.getDay() + 6) % 7;         // Monday = 0
     const week0        = new Date(horizonStart.getFullYear(), horizonStart.getMonth(),
                                  horizonStart.getDate() - mondayOffset);
-    const weekOf       = i => Math.floor((i + mondayOffset) / 7);
+    const weekOf       = function (i) { return Math.floor((i + mondayOffset) / 7); };
     const weekCount    = weekOf(lastDayIdx) + 1;
 
     const weeksPlanned = new Array(weekCount).fill(0);
@@ -134,18 +138,20 @@ const ROADMAP_JSON = (function () {
       const name = String(row[1] || '').trim();
       if (!name) continue;
 
-      if (!isDate_(row[2]) || !isDate_(row[3])) continue;          // no dates, no days
-      const s = Math.max(0, Math.min(lastDayIdx, dayIndex(row[2])));
-      const e = Math.max(0, Math.min(lastDayIdx, dayIndex(row[3])));
+      const startDate = parseDate_(row[2], defaultYear);
+      const endDate   = parseDate_(row[3], defaultYear);
+      if (!startDate || !endDate) continue;                       // no dates, no days
+
+      const s = Math.max(0, Math.min(lastDayIdx, dayIndex(startDate)));
+      const e = Math.max(0, Math.min(lastDayIdx, dayIndex(endDate)));
       const planned = e - s + 1;
       if (planned <= 0) continue;
 
       let checked = 0;
       for (let i = 0; i < dayCols.length; i++) {
-        const c = dayCols[i];
-        if (!isTrue_(row[c])) continue;
-        const d = dayIndex(header[c]);
-        if (d < s || d > e) continue;                              // ignore ticks outside the window
+        if (!isTrue_(row[dayCols[i].c])) continue;
+        const d = dayIndex(dayCols[i].d);
+        if (d < s || d > e) continue;                             // ignore ticks outside the window
         checked++;
         weeksChecked[weekOf(d)]++;
       }
@@ -158,8 +164,8 @@ const ROADMAP_JSON = (function () {
       }
       buckets[catName].tasks.push({
         name: name,
-        start: iso_(row[2]),
-        end: iso_(row[3]),
+        start: iso_(startDate),
+        end: iso_(endDate),
         checked: checked,
         planned: planned
       });
@@ -203,7 +209,7 @@ const ROADMAP_JSON = (function () {
       });
     }
 
-    return {
+    const payload = {
       updated: new Date().toISOString(),
       source: 'sheet',
       horizon: { start: iso_(horizonStart), end: iso_(horizonEnd) },
@@ -211,12 +217,84 @@ const ROADMAP_JSON = (function () {
       weeks: weeks,
       categories: categories
     };
+
+    if (debug) payload._debug = debugInfo_(ss, sh, header, dayCols, lastRow, lastCol);
+    return payload;
   }
 
-  /* --------------------------------------------------------------- helpers */
+  /* -------------------------------------------------------------- debug */
+
+  function debugInfo_(ss, sh, header, dayCols, lastRow, lastCol) {
+    const idx = [];
+    [0, 1, 2, dayCols.length - 3, dayCols.length - 2, dayCols.length - 1].forEach(function (i) {
+      if (i >= 0 && i < dayCols.length && idx.indexOf(i) === -1) idx.push(i);
+    });
+
+    const duplicates = [];
+    const gaps = [];
+    for (let i = 1; i < dayCols.length; i++) {
+      const step = dayDiff_(dayCols[i - 1].d, dayCols[i].d);
+      if (step === 0) duplicates.push(iso_(dayCols[i].d));
+      else if (step > 1) gaps.push(iso_(dayCols[i - 1].d) + ' -> ' + iso_(dayCols[i].d));
+      else if (step < 0) gaps.push('out of order at ' + iso_(dayCols[i].d));
+    }
+
+    return {
+      spreadsheet: safe_(function () { return ss.getName(); }),
+      sheet: safe_(function () { return sh.getName(); }),
+      timezoneSheet: safe_(function () { return ss.getSpreadsheetTimeZone(); }),
+      timezoneScript: safe_(function () { return Session.getScriptTimeZone(); }),
+      lastRow: lastRow,
+      lastCol: lastCol,
+      dayColumns: dayCols.length,
+      horizonStart: iso_(dayCols[0].d),
+      horizonEnd: iso_(dayCols[dayCols.length - 1].d),
+      duplicates: duplicates,
+      gaps: gaps,
+      headerSample: idx.map(function (i) {
+        const raw = header[dayCols[i].c];
+        return {
+          column: columnName_(dayCols[i].c),
+          raw: String(raw),
+          kind: Object.prototype.toString.call(raw),
+          parsed: iso_(dayCols[i].d)
+        };
+      })
+    };
+  }
+
+  /* ------------------------------------------------------------ helpers */
 
   function isDate_(v) {
     return Object.prototype.toString.call(v) === '[object Date]' && !isNaN(v.getTime());
+  }
+
+  /** Accepts Date, ISO text, dd.mm.yyyy, dd/mm/yyyy or dd.mm (uses defaultYear). */
+  function parseDate_(v, defaultYear) {
+    if (isDate_(v)) return dateOnly_(v);
+
+    if (typeof v === 'number' && v > 20000 && v < 80000) {        // Sheets serial
+      const ms = Math.round((v - 25569) * 86400000);
+      const u = new Date(ms);
+      return new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate());
+    }
+
+    if (typeof v !== 'string') return null;
+    const s = v.trim();
+    let m = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s);
+    if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
+
+    m = /^(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{2,4})$/.exec(s);
+    if (m) {
+      let y = +m[3];
+      if (y < 100) y += 2000;
+      return new Date(y, +m[2] - 1, +m[1]);
+    }
+
+    m = /^(\d{1,2})[.\/-](\d{1,2})$/.exec(s);
+    if (m) return new Date(defaultYear || new Date().getFullYear(), +m[2] - 1, +m[1]);
+
+    return null;
   }
 
   function isTrue_(v) {
@@ -244,6 +322,20 @@ const ROADMAP_JSON = (function () {
     const m = d.getMonth() + 1;
     const day = d.getDate();
     return d.getFullYear() + '-' + (m < 10 ? '0' : '') + m + '-' + (day < 10 ? '0' : '') + day;
+  }
+
+  function columnName_(index0) {                                  // 0 -> A
+    let n = index0 + 1, s = '';
+    while (n > 0) {
+      const r = (n - 1) % 26;
+      s = String.fromCharCode(65 + r) + s;
+      n = Math.floor((n - 1) / 26);
+    }
+    return s;
+  }
+
+  function safe_(fn) {
+    try { return fn(); } catch (e) { return ''; }
   }
 
   return { doGet: doGet, logPayload: logPayload };
