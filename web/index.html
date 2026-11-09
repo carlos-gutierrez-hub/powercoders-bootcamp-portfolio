@@ -40,6 +40,7 @@
   .stack i{display:block;height:100%}
   .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font:11px/1 var(--mono);color:var(--muted)}
   .legend b{color:var(--txt);font-weight:600}
+  .legend .lite{color:var(--dim)}
   .dot{display:inline-block;width:7px;height:7px;border-radius:99px;margin-right:7px;vertical-align:middle}
   .stripe{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin-top:16px}
   .stripe i{height:9px;border-radius:2px;background:var(--grid);position:relative;overflow:hidden}
@@ -151,10 +152,19 @@ function render(d) {
   const rows = [];
   d.categories.forEach(c => c.tasks.forEach(t => rows.push({ c, t })));
 
-  // Task-days (the sum of every task window) are not calendar days: tasks
-  // overlap, so they add up to more than the horizon. Keep both visible.
-  const tasksComplete = rows.filter(r => r.t.planned > 0 && r.t.checked >= r.t.planned).length;
-  const tasksStarted  = rows.filter(r => r.t.checked > 0).length;
+  // The top of the page counts TASKS (what a recruiter reads); the table below
+  // keeps task-days (what the spreadsheet measures). Tasks overlap, so task-days
+  // add up to more than the calendar horizon — never show them as "days left".
+  const tasksComplete   = rows.filter(r => r.t.planned > 0 && r.t.checked >= r.t.planned).length;
+  const tasksInProgress = rows.filter(r => r.t.checked > 0 && r.t.checked < r.t.planned).length;
+  const tasksPending    = rows.length - tasksComplete;
+  const tasksNotStarted = tasksPending - tasksInProgress;
+  const overallTasks    = pct(tasksComplete, rows.length);
+  const catStats = d.categories.map(c => {
+    const n = c.tasks.length;
+    const done = c.tasks.filter(t => t.planned > 0 && t.checked >= t.planned).length;
+    return { c, n, done, pctTasks: pct(done, n) };
+  });
   const iso2 = s => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
   const calendarDays = Math.round((iso2(d.horizon.end) - iso2(d.horizon.start)) / 86400000) + 1;
   const now = new Date();
@@ -165,43 +175,43 @@ function render(d) {
   <div class="top">
     <div>
       <h1>Powercoders · Roadmap Dashboard</h1>
-      <div class="sub">Preparation roadmap · ${d.horizon.start.split("-").reverse().join(".")} → ${d.horizon.end.split("-").reverse().join(".")} · ${rows.length} tasks</div>
+      <div class="sub">Preparation roadmap · ${d.horizon.start.split("-").reverse().join(".")} → ${d.horizon.end.split("-").reverse().join(".")} · ${rows.length} tasks · day ${dayOfHorizon} of ${calendarDays}</div>
     </div>
     ${badge(d.source, d.updated)}
   </div>
 
   <div class="kpis">
-    <div class="card kpi"><div class="lab">Overall</div><div class="val">${overall}%</div>
-      <div class="delta">${done} of ${total} task-days</div></div>
-    <div class="card kpi"><div class="lab">Tasks complete</div><div class="val">${tasksComplete}<span class="of">/ ${rows.length}</span></div>
-      <div class="delta">${tasksStarted} started</div></div>
-    <div class="card kpi"><div class="lab">Task-days worked</div><div class="val">${done}</div>
-      <div class="delta">${total - done} pending</div></div>
-    <div class="card kpi"><div class="lab">Horizon</div><div class="val">${calendarDays}<span class="of">days</span></div>
-      <div class="delta">day ${dayOfHorizon} of ${calendarDays}</div></div>
+    <div class="card kpi"><div class="lab">Overall</div><div class="val">${overallTasks}%</div>
+      <div class="delta">${tasksComplete} of ${rows.length} tasks complete</div></div>
+    <div class="card kpi"><div class="lab">Completed tasks</div><div class="val">${tasksComplete}</div>
+      <div class="delta">every task-day ticked</div></div>
+    <div class="card kpi"><div class="lab">Pending tasks</div><div class="val">${tasksPending}</div>
+      <div class="delta">${tasksNotStarted} not started · ${tasksInProgress} in progress</div></div>
+    <div class="card kpi"><div class="lab">Tasks in progress</div><div class="val">${tasksInProgress}</div>
+      <div class="delta">started, not finished</div></div>
   </div>
-  <p class="note">A task spans several days and several tasks run in parallel, so task-days (${total}) add up to more than the ${calendarDays} calendar days of the horizon. The grid below has one checkbox per task-day.</p>
+  <p class="note">A task counts as complete when all of its planned task-days are ticked · horizon: ${calendarDays} calendar days (day ${dayOfHorizon}).</p>
 
   <div class="card band" style="margin-bottom:12px">
-    <h3>Completion by category · ${overall}% overall · ${done}/${total} task-days</h3>
-    <div class="stack">${d.categories.map(c => `
-      <i title="${esc(c.name)}: ${pct(c.checked, c.planned)}%"
+    <h3>Effort split by category · bar width = share of ${total} task-days · percentage = tasks complete</h3>
+    <div class="stack">${catStats.map(({ c }) => `
+      <i title="${esc(c.name)}: ${c.planned} task-days"
          style="width:${(c.planned / total) * 100}%;background:${c.chart};opacity:${c.checked ? .95 : .18}"></i>`).join("")}
     </div>
-    <div class="legend">${d.categories.map(c => `
-      <span><span class="dot" style="background:${c.chart}"></span>${esc(c.short)} <b>${pct(c.checked, c.planned)}%</b></span>`).join("")}
+    <div class="legend">${catStats.map(({ c, n, done: cd, pctTasks }) => `
+      <span><span class="dot" style="background:${c.chart}"></span>${esc(c.short)} <b>${pctTasks}%</b><span class="lite"> ${cd}/${n}</span></span>`).join("")}
     </div>
-    <div class="stripe">${weeks.map(w => `<i title="${w.label}: ${w.checked}/${w.planned} days"><b style="width:${w.planned ? (w.checked / w.planned) * 100 : 0}%"></b></i>`).join("")}</div>
+    <div class="stripe">${weeks.map(w => `<i title="${w.label}: ${w.checked}/${w.planned} task-days"><b style="width:${w.planned ? (w.checked / w.planned) * 100 : 0}%"></b></i>`).join("")}</div>
     <div class="wklabels">${weeks.map(w => `<div>${w.label}</div>`).join("")}</div>
   </div>
 
   <div class="card panel" style="margin-bottom:4px">
     <h3>Progress by category</h3>
-    <div class="cats">${d.categories.map(c => `
+    <div class="cats">${catStats.map(({ c, n, done: cd, pctTasks }) => `
       <div class="cat">
-        ${ring(c.chart, pct(c.checked, c.planned))}
+        ${ring(c.chart, pctTasks)}
         <div class="nm">${esc(c.short)}</div>
-        <div class="nums"><b>${c.checked}</b>/${c.planned}</div>
+        <div class="nums"><b>${cd}</b>/${n} tasks</div>
       </div>`).join("")}
     </div>
   </div>
@@ -215,10 +225,12 @@ function render(d) {
     </select>
   </div>
 
+  <p class="note">Progress calculated based on ${total} total task-days across ${rows.length} tasks. Each tick in the spreadsheet is one task-day of one task; a row's % is its own task-days, not a share of the roadmap.</p>
+
   <div class="card scroll">
     <table>
       <thead><tr>
-        <th>Category</th><th>Task / Activity</th><th>Window</th><th>Progress</th><th>Task-days</th><th>%</th>
+        <th>Category</th><th>Task / Activity</th><th>Window</th><th>Progress</th><th title="Task-days worked / planned for this task (one tick per day in the spreadsheet)">Task-days</th><th>%</th>
       </tr></thead>
       <tbody id="tbody">
         ${rows.map(({ c, t }) => {
