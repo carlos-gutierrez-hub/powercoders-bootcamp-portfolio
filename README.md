@@ -21,7 +21,7 @@ I am an Industrial Engineer transitioning into software development, focused on 
 
 ## Live dashboard — Excel → Google Sheet → web
 
-**https://carlosg-pc-roadmap-dashboard.netlify.app/** — the Task Tracker as a live page: 58 tasks, 6 categories, 259 planned days (25 Oct – 30 Dec 2026).
+**https://carlosg-pc-roadmap-dashboard.netlify.app/** — the Task Tracker as a live page: 58 tasks, 6 categories, 259 task-days (25 Oct – 30 Dec 2026).
 
 ```
 Excel v2 (frozen) → Google Sheet (master) → Apps Script JSON → web/ (static HTML) → Netlify

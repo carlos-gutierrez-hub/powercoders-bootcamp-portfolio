@@ -54,7 +54,7 @@ Nothing is duplicated: the Sheet holds the state, the endpoint derives every num
 }
 ```
 
-Planned days are **derived from the dates**, never stored: `planned = end − start + 1` in calendar days. A checkbox only counts if it falls inside the task's window, which is why a stray tick cannot inflate the total.
+Planned **task-days** are derived from the dates, never stored: `planned = end − start + 1` in calendar days per task. Because tasks overlap, the sum (259) is larger than the 67 calendar days of the horizon — the same reason `checked` is not "days worked" in the calendar sense. A checkbox only counts if it falls inside the task's window, which is why a stray tick cannot inflate the total.
 
 ## 4. Updating the data (the daily loop)
 

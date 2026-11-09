@@ -33,6 +33,8 @@
   .kpi .lab{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
   .kpi .val{font:600 24px/1.15 var(--mono);margin-top:6px}
   .kpi .delta{font:11px/1 var(--mono);color:var(--muted);margin-top:4px}
+  .kpi .of{font-size:13px;color:var(--muted);font-weight:400;margin-left:4px}
+  .note{margin:-2px 0 12px;font-size:11px;line-height:1.55;color:var(--muted);max-width:78ch}
   .band{padding:14px 16px}
   .stack{display:flex;height:16px;border-radius:99px;overflow:hidden;background:var(--grid)}
   .stack i{display:block;height:100%}
@@ -146,9 +148,18 @@ function badge(src, updated) {
 function render(d) {
   const total = d.overall.planned, done = d.overall.checked, overall = pct(done, total);
   const weeks = d.weeks || [];
-  const wMax = Math.max(...weeks.map(w => w.planned), 1);
   const rows = [];
   d.categories.forEach(c => c.tasks.forEach(t => rows.push({ c, t })));
+
+  // Task-days (the sum of every task window) are not calendar days: tasks
+  // overlap, so they add up to more than the horizon. Keep both visible.
+  const tasksComplete = rows.filter(r => r.t.planned > 0 && r.t.checked >= r.t.planned).length;
+  const tasksStarted  = rows.filter(r => r.t.checked > 0).length;
+  const iso2 = s => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10));
+  const calendarDays = Math.round((iso2(d.horizon.end) - iso2(d.horizon.start)) / 86400000) + 1;
+  const now = new Date();
+  const dayOfHorizon = Math.min(calendarDays, Math.max(1,
+    Math.round((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - iso2(d.horizon.start)) / 86400000) + 1));
 
   const html = `
   <div class="top">
@@ -161,17 +172,18 @@ function render(d) {
 
   <div class="kpis">
     <div class="card kpi"><div class="lab">Overall</div><div class="val">${overall}%</div>
-      <div class="delta">${done} / ${total} days</div></div>
-    <div class="card kpi"><div class="lab">Checked days</div><div class="val">${done}</div>
-      <div class="delta">across ${rows.length} tasks</div></div>
-    <div class="card kpi"><div class="lab">Pending days</div><div class="val">${total - done}</div>
-      <div class="delta">until ${d.horizon.end.split("-").reverse().join(".")}</div></div>
-    <div class="card kpi"><div class="lab">Weeks planned</div><div class="val">${weeks.length}</div>
-      <div class="delta">${weeks.filter(w => w.planned && w.checked >= w.planned).length} finished</div></div>
+      <div class="delta">${done} of ${total} task-days</div></div>
+    <div class="card kpi"><div class="lab">Tasks complete</div><div class="val">${tasksComplete}<span class="of">/ ${rows.length}</span></div>
+      <div class="delta">${tasksStarted} started</div></div>
+    <div class="card kpi"><div class="lab">Task-days worked</div><div class="val">${done}</div>
+      <div class="delta">${total - done} pending</div></div>
+    <div class="card kpi"><div class="lab">Horizon</div><div class="val">${calendarDays}<span class="of">days</span></div>
+      <div class="delta">day ${dayOfHorizon} of ${calendarDays}</div></div>
   </div>
+  <p class="note">A task spans several days and several tasks run in parallel, so task-days (${total}) add up to more than the ${calendarDays} calendar days of the horizon. The grid below has one checkbox per task-day.</p>
 
   <div class="card band" style="margin-bottom:12px">
-    <h3>Completion by category · ${overall}% overall · ${done}/${total} days</h3>
+    <h3>Completion by category · ${overall}% overall · ${done}/${total} task-days</h3>
     <div class="stack">${d.categories.map(c => `
       <i title="${esc(c.name)}: ${pct(c.checked, c.planned)}%"
          style="width:${(c.planned / total) * 100}%;background:${c.chart};opacity:${c.checked ? .95 : .18}"></i>`).join("")}
@@ -206,7 +218,7 @@ function render(d) {
   <div class="card scroll">
     <table>
       <thead><tr>
-        <th>Category</th><th>Task / Activity</th><th>Window</th><th>Progress</th><th>Days</th><th>%</th>
+        <th>Category</th><th>Task / Activity</th><th>Window</th><th>Progress</th><th>Task-days</th><th>%</th>
       </tr></thead>
       <tbody id="tbody">
         ${rows.map(({ c, t }) => {
