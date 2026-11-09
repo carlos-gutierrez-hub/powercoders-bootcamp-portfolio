@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Powercoders Spring 2027 preparation roadmap — progress dashboard built from a Google Sheet via Apps Script JSON.">
+<title>Roadmap Dashboard · Powercoders Spring 2027</title>
+<style>
+  :root{
+    --bg:#0B0E13; --surface:#111720; --surface-2:#0E141C; --line:#1E2632;
+    --txt:#E6EDF3; --muted:#9BA8B6; --dim:#7C8896;
+    --grid:#232F3E;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+    --r:10px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans)}
+  body{padding:22px 20px 48px}
+  .wrap{max-width:1240px}
+  .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  h1{font-size:20px;margin:0;font-weight:600;letter-spacing:-.01em}
+  .sub{color:var(--muted);font-size:12px;margin-top:4px}
+  .badge{font:11px/1 var(--mono);border-radius:99px;padding:6px 10px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+  .badge.live{color:#9FE3C8;background:rgba(3,206,164,.08);border:1px solid rgba(3,206,164,.28)}
+  .badge.sample{color:#EBD08A;background:rgba(234,196,53,.08);border:1px solid rgba(234,196,53,.28)}
+  .badge.cached{color:#F3B7A6;background:rgba(251,77,61,.08);border:1px solid rgba(251,77,61,.3)}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+  .panel{padding:14px 16px}
+  .panel h3,.band h3{margin:0 0 12px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+  .kpi{padding:12px 14px}
+  .kpi .lab{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .kpi .val{font:600 24px/1.15 var(--mono);margin-top:6px}
+  .kpi .delta{font:11px/1 var(--mono);color:var(--muted);margin-top:4px}
+  .band{padding:14px 16px}
+  .stack{display:flex;height:16px;border-radius:99px;overflow:hidden;background:var(--grid)}
+  .stack i{display:block;height:100%}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font:11px/1 var(--mono);color:var(--muted)}
+  .legend b{color:var(--txt);font-weight:600}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:99px;margin-right:7px;vertical-align:middle}
+  .stripe{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin-top:16px}
+  .stripe i{height:9px;border-radius:2px;background:var(--grid);position:relative;overflow:hidden}
+  .stripe i b{position:absolute;left:0;top:0;bottom:0;background:#17DCB4;opacity:.9}
+  .wklabels{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin-top:6px;
+    font:10px/1 var(--mono);color:#AEBBC9;text-align:center}
+  .cats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .cat{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px 10px;text-align:center}
+  .cat .nm{font-size:11px;height:28px;display:flex;align-items:center;justify-content:center;line-height:1.25}
+  .cat .nums{font:11px/1.4 var(--mono);color:var(--muted);margin-top:4px}
+  .cat .nums b{color:var(--txt);font-weight:600}
+  svg.ring{display:block;margin:0 auto}
+  .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0 8px}
+  select{background:var(--surface);color:var(--txt);border:1px solid var(--line);border-radius:7px;
+    padding:6px 8px;font:12px var(--sans)}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{text-align:left;font:600 9.5px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);padding:0 8px 8px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--surface)}
+  td{padding:7px 8px;border-bottom:1px solid #161D27;vertical-align:middle}
+  tr:last-child td{border-bottom:0}
+  .mono{font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .bar{height:5px;background:var(--grid);border-radius:99px;overflow:hidden;min-width:70px}
+  .bar span{display:block;height:100%;border-radius:99px}
+  .pct{font-family:var(--mono);font-size:11.5px;text-align:right;white-space:nowrap}
+  .scroll{max-height:520px;overflow:auto}
+  .foot{margin-top:16px;color:var(--muted);font-size:11px;line-height:1.6}
+  .foot a{color:var(--muted)}
+  .err{padding:12px 14px;border:1px solid rgba(251,77,61,.4);background:rgba(251,77,61,.08);
+    border-radius:8px;color:#F3B7A6;font-size:12px;margin-bottom:12px}
+  @media (max-width:1000px){
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .cats{grid-template-columns:repeat(3,1fr)}
+  }
+  @media (max-width:640px){
+    body{padding:16px 12px 32px}
+    .cats{grid-template-columns:repeat(2,1fr)}
+    .kpis{grid-template-columns:repeat(2,1fr)}
+    .scroll{max-height:none}
+    table{font-size:11px}
+    th:nth-child(3),td:nth-child(3){display:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <p class="sub">Loading roadmap…</p>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   Data source.
+   Step 1 (now): the cached snapshot committed next to this page.
+   Step 2: set ENDPOINT to the Apps Script web app URL and the page
+   asks Google for the live JSON first, falling back to the snapshot.
+   ------------------------------------------------------------------ */
+const ENDPOINT = "";             // e.g. https://script.google.com/macros/s/AKfy…/exec
+const SNAPSHOT = "data/datos.json";
+
+const pct = (a, b) => (b ? Math.round((100 * a) / b) : 0);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const dmy = iso => { const [y, m, d] = iso.split("-"); return `${d}.${m}`; };
+
+function ring(color, value, size = 80, stroke = 8) {
+  const r = (size - stroke) / 2, c = 2 * Math.PI * r, off = c * (1 - value / 100);
+  return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"
+      role="img" aria-label="${value}% complete">
+    <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="#232F3E" stroke-width="${stroke}"/>
+    <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
+      stroke-dasharray="${c}" stroke-dashoffset="${off}" stroke-linecap="butt"
+      transform="rotate(-90 ${size / 2} ${size / 2})"/>
+    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central"
+      font-family="ui-monospace,monospace" font-size="${size * 0.235}" font-weight="600"
+      fill="#E6EDF3">${value}%</text>
+  </svg>`;
+}
+
+function jsonp(url, timeout = 4000) {
+  return new Promise(resolve => {
+    const s = document.createElement("script");
+    const t = setTimeout(() => resolve(null), timeout);
+    window.__roadmap = data => { clearTimeout(t); resolve(data); };
+    s.src = url + (url.includes("?") ? "&" : "?") + "prefix=__roadmap&_=" + Date.now();
+    s.onerror = () => { clearTimeout(t); resolve(null); };
+    document.head.appendChild(s);
+  });
+}
+
+async function loadData() {
+  if (ENDPOINT) {
+    const live = await jsonp(ENDPOINT);
+    if (live && live.categories) return { ...live, source: "live" };
+  }
+  const r = await fetch(SNAPSHOT, { cache: "no-store" });
+  if (!r.ok) throw new Error("snapshot " + r.status);
+  const snap = await r.json();
+  return { ...snap, source: snap.source === "sample" ? "sample" : "cached" };
+}
+
+function badge(src, updated) {
+  const when = updated ? new Date(updated).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }) : "";
+  if (src === "live") return `<span class="badge live">● Live · ${when}</span>`;
+  if (src === "sample") return `<span class="badge sample">● Sample data · not connected yet</span>`;
+  return `<span class="badge cached">● Cached · ${when}</span>`;
+}
+
+function render(d) {
+  const total = d.overall.planned, done = d.overall.checked, overall = pct(done, total);
+  const weeks = d.weeks || [];
+  const wMax = Math.max(...weeks.map(w => w.planned), 1);
+  const rows = [];
+  d.categories.forEach(c => c.tasks.forEach(t => rows.push({ c, t })));
+
+  const html = `
+  <div class="top">
+    <div>
+      <h1>Powercoders · Roadmap Dashboard</h1>
+      <div class="sub">Preparation roadmap · ${d.horizon.start.split("-").reverse().join(".")} → ${d.horizon.end.split("-").reverse().join(".")} · ${rows.length} tasks</div>
+    </div>
+    ${badge(d.source, d.updated)}
+  </div>
+
+  <div class="kpis">
+    <div class="card kpi"><div class="lab">Overall</div><div class="val">${overall}%</div>
+      <div class="delta">${done} / ${total} days</div></div>
+    <div class="card kpi"><div class="lab">Checked days</div><div class="val">${done}</div>
+      <div class="delta">across ${rows.length} tasks</div></div>
+    <div class="card kpi"><div class="lab">Pending days</div><div class="val">${total - done}</div>
+      <div class="delta">until ${d.horizon.end.split("-").reverse().join(".")}</div></div>
+    <div class="card kpi"><div class="lab">Weeks planned</div><div class="val">${weeks.length}</div>
+      <div class="delta">${weeks.filter(w => w.planned && w.checked >= w.planned).length} finished</div></div>
+  </div>
+
+  <div class="card band" style="margin-bottom:12px">
+    <h3>Completion by category · ${overall}% overall · ${done}/${total} days</h3>
+    <div class="stack">${d.categories.map(c => `
+      <i title="${esc(c.name)}: ${pct(c.checked, c.planned)}%"
+         style="width:${(c.planned / total) * 100}%;background:${c.chart};opacity:${c.checked ? .95 : .18}"></i>`).join("")}
+    </div>
+    <div class="legend">${d.categories.map(c => `
+      <span><span class="dot" style="background:${c.chart}"></span>${esc(c.short)} <b>${pct(c.checked, c.planned)}%</b></span>`).join("")}
+    </div>
+    <div class="stripe">${weeks.map(w => `<i title="${w.label}: ${w.checked}/${w.planned} days"><b style="width:${w.planned ? (w.checked / w.planned) * 100 : 0}%"></b></i>`).join("")}</div>
+    <div class="wklabels">${weeks.map(w => `<div>${w.label}</div>`).join("")}</div>
+  </div>
+
+  <div class="card panel" style="margin-bottom:4px">
+    <h3>Progress by category</h3>
+    <div class="cats">${d.categories.map(c => `
+      <div class="cat">
+        ${ring(c.chart, pct(c.checked, c.planned))}
+        <div class="nm">${esc(c.short)}</div>
+        <div class="nums"><b>${c.checked}</b>/${c.planned}</div>
+      </div>`).join("")}
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <h3 style="margin:0;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">
+      Tasks · ${rows.length}</h3>
+    <select id="filter" aria-label="Filter by category">
+      <option value="">All categories</option>
+      ${d.categories.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join("")}
+    </select>
+  </div>
+
+  <div class="card scroll">
+    <table>
+      <thead><tr>
+        <th>Category</th><th>Task / Activity</th><th>Window</th><th>Progress</th><th>Days</th><th>%</th>
+      </tr></thead>
+      <tbody id="tbody">
+        ${rows.map(({ c, t }) => {
+          const p = pct(t.checked, t.planned);
+          return `<tr data-cat="${c.id}">
+            <td style="white-space:nowrap"><span class="dot" style="background:${c.chart}"></span>${esc(c.short)}</td>
+            <td>${esc(t.name)}</td>
+            <td class="mono">${dmy(t.start)} → ${dmy(t.end)}</td>
+            <td><div class="bar"><span style="width:${p}%;background:${c.chart}"></span></div></td>
+            <td class="pct">${t.checked}/${t.planned}</td>
+            <td class="pct">${p}%</td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="foot">
+    Data source: ${d.source === "live" ? "Google Sheet via Apps Script (live)" : d.source === "sample" ? "sample snapshot (endpoint not connected yet)" : "committed snapshot"}.
+    Last update: ${d.updated ? new Date(d.updated).toLocaleString("en-GB") : "—"}.
+    Built with a static HTML page · no frameworks · no build step.
+  </p>`;
+
+  const app = document.getElementById("app");
+  app.innerHTML = html;
+
+  const sel = document.getElementById("filter");
+  sel.addEventListener("change", () => {
+    const v = sel.value;
+    document.querySelectorAll("#tbody tr").forEach(tr => {
+      tr.style.display = !v || tr.dataset.cat === v ? "" : "none";
+    });
+  });
+}
+
+loadData()
+  .then(render)
+  .catch(err => {
+    document.getElementById("app").innerHTML =
+      `<div class="err"><strong>Could not load the roadmap data.</strong><br>
+       ${esc(err.message)} — if you opened the file directly, serve it over HTTP
+       (<code>python -m http.server</code>) so the browser can fetch <code>data/datos.json</code>.</div>`;
+  });
+</script>
+</body>
+</html>

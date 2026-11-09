@@ -1,0 +1,554 @@
+{
+ "updated": "2026-11-09T09:12:00+01:00",
+ "source": "sample",
+ "horizon": {
+  "start": "2026-10-25",
+  "end": "2026-12-30"
+ },
+ "overall": {
+  "checked": 71,
+  "planned": 259
+ },
+ "weeks": [
+  {
+   "label": "W0",
+   "start": "2026-10-19",
+   "planned": 2,
+   "checked": 2
+  },
+  {
+   "label": "W1",
+   "start": "2026-10-26",
+   "planned": 18,
+   "checked": 18
+  },
+  {
+   "label": "W2",
+   "start": "2026-11-02",
+   "planned": 35,
+   "checked": 18
+  },
+  {
+   "label": "W3",
+   "start": "2026-11-09",
+   "planned": 42,
+   "checked": 9
+  },
+  {
+   "label": "W4",
+   "start": "2026-11-16",
+   "planned": 53,
+   "checked": 12
+  },
+  {
+   "label": "W5",
+   "start": "2026-11-23",
+   "planned": 59,
+   "checked": 9
+  },
+  {
+   "label": "W6",
+   "start": "2026-11-30",
+   "planned": 13,
+   "checked": 0
+  },
+  {
+   "label": "W7",
+   "start": "2026-12-07",
+   "planned": 14,
+   "checked": 0
+  },
+  {
+   "label": "W8",
+   "start": "2026-12-14",
+   "planned": 14,
+   "checked": 0
+  },
+  {
+   "label": "W9",
+   "start": "2026-12-21",
+   "planned": 6,
+   "checked": 0
+  },
+  {
+   "label": "W10",
+   "start": "2026-12-28",
+   "planned": 3,
+   "checked": 0
+  }
+ ],
+ "categories": [
+  {
+   "id": 1,
+   "name": "1. Discovery / Exploration",
+   "short": "Discovery",
+   "color": "#EAC435",
+   "chart": "#F0CE55",
+   "checked": 35,
+   "planned": 35,
+   "tasks": [
+    {
+     "name": "Explore Powercoders and define scope",
+     "start": "2026-10-25",
+     "end": "2026-10-27",
+     "checked": 3,
+     "planned": 3
+    },
+    {
+     "name": "Install and configure tools",
+     "start": "2026-10-25",
+     "end": "2026-11-05",
+     "checked": 12,
+     "planned": 12
+    },
+    {
+     "name": "Define initial Portfolio architecture",
+     "start": "2026-10-28",
+     "end": "2026-10-30",
+     "checked": 3,
+     "planned": 3
+    },
+    {
+     "name": "Explore AI / No-Code / Low-Code tools",
+     "start": "2026-10-28",
+     "end": "2026-11-05",
+     "checked": 9,
+     "planned": 9
+    },
+    {
+     "name": "Define Master Roadmap",
+     "start": "2026-11-01",
+     "end": "2026-11-05",
+     "checked": 5,
+     "planned": 5
+    },
+    {
+     "name": "Create initial project README",
+     "start": "2026-11-05",
+     "end": "2026-11-05",
+     "checked": 1,
+     "planned": 1
+    },
+    {
+     "name": "Upload Excel Roadmap + README to GitHub",
+     "start": "2026-11-05",
+     "end": "2026-11-05",
+     "checked": 1,
+     "planned": 1
+    },
+    {
+     "name": "Review and delimit current CV",
+     "start": "2026-11-06",
+     "end": "2026-11-06",
+     "checked": 1,
+     "planned": 1
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "2. Theory / Fundamentals",
+   "short": "Theory",
+   "color": "#345995",
+   "chart": "#5B7FBF",
+   "checked": 24,
+   "planned": 56,
+   "tasks": [
+    {
+     "name": "PRD — Product Requirements Document",
+     "start": "2026-11-06",
+     "end": "2026-11-07",
+     "checked": 1,
+     "planned": 2
+    },
+    {
+     "name": "User Story Mapping",
+     "start": "2026-11-09",
+     "end": "2026-11-10",
+     "checked": 1,
+     "planned": 2
+    },
+    {
+     "name": "HTML Fundamentals",
+     "start": "2026-11-09",
+     "end": "2026-11-11",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Software Engineer Thinking / Problem Solving",
+     "start": "2026-11-11",
+     "end": "2026-11-12",
+     "checked": 1,
+     "planned": 2
+    },
+    {
+     "name": "Git / GitHub Fundamentals",
+     "start": "2026-11-12",
+     "end": "2026-11-13",
+     "checked": 1,
+     "planned": 2
+    },
+    {
+     "name": "Technical Vocabulary / Terminology",
+     "start": "2026-11-12",
+     "end": "2026-11-30",
+     "checked": 8,
+     "planned": 19
+    },
+    {
+     "name": "File Types & Formats",
+     "start": "2026-11-14",
+     "end": "2026-11-15",
+     "checked": 1,
+     "planned": 2
+    },
+    {
+     "name": "CSS Fundamentals",
+     "start": "2026-11-15",
+     "end": "2026-11-18",
+     "checked": 2,
+     "planned": 4
+    },
+    {
+     "name": "Process Mapping",
+     "start": "2026-11-16",
+     "end": "2026-11-17",
+     "checked": 1,
+     "planned": 2
+    },
+    {
+     "name": "Data Mapping / ERD",
+     "start": "2026-11-18",
+     "end": "2026-11-19",
+     "checked": 1,
+     "planned": 2
+    },
+    {
+     "name": "Solution Architecture",
+     "start": "2026-11-19",
+     "end": "2026-11-20",
+     "checked": 1,
+     "planned": 2
+    },
+    {
+     "name": "JavaScript Fundamentals",
+     "start": "2026-11-19",
+     "end": "2026-11-23",
+     "checked": 2,
+     "planned": 5
+    },
+    {
+     "name": "Automation Tools",
+     "start": "2026-11-22",
+     "end": "2026-11-24",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Python Fundamentals",
+     "start": "2026-11-24",
+     "end": "2026-11-26",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Workflows / Git / CI/CD / Build Concepts",
+     "start": "2026-11-26",
+     "end": "2026-11-28",
+     "checked": 1,
+     "planned": 3
+    }
+   ]
+  },
+  {
+   "id": 3,
+   "name": "3. Web / Portfolio Construction",
+   "short": "Web",
+   "color": "#03CEA4",
+   "chart": "#17DCB4",
+   "checked": 10,
+   "planned": 51,
+   "tasks": [
+    {
+     "name": "Export roadmap data to CSV + document evolution",
+     "start": "2026-11-08",
+     "end": "2026-11-08",
+     "checked": 0,
+     "planned": 1
+    },
+    {
+     "name": "Hacer los últimos ajustes al documento Roadmap Tracker v2",
+     "start": "2026-11-08",
+     "end": "2026-11-08",
+     "checked": 0,
+     "planned": 1
+    },
+    {
+     "name": "Subir o dejar evidencia en GitHub los últimos ajustes al documento Roadmap Tracker v2",
+     "start": "2026-11-08",
+     "end": "2026-11-08",
+     "checked": 0,
+     "planned": 1
+    },
+    {
+     "name": "Dashboard Evolution: From Excel to Automated Web App",
+     "start": "2026-11-09",
+     "end": "2026-11-09",
+     "checked": 0,
+     "planned": 1
+    },
+    {
+     "name": "Define final Portfolio concept",
+     "start": "2026-11-06",
+     "end": "2026-11-08",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Define maximum five tabs/pages",
+     "start": "2026-11-06",
+     "end": "2026-11-08",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Design initial UX/UI",
+     "start": "2026-11-10",
+     "end": "2026-11-12",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Dark / Light Mode",
+     "start": "2026-11-13",
+     "end": "2026-11-14",
+     "checked": 0,
+     "planned": 2
+    },
+    {
+     "name": "Frontend implementation",
+     "start": "2026-11-13",
+     "end": "2026-11-22",
+     "checked": 2,
+     "planned": 10
+    },
+    {
+     "name": "Prepare portfolio content",
+     "start": "2026-11-15",
+     "end": "2026-11-20",
+     "checked": 1,
+     "planned": 6
+    },
+    {
+     "name": "Automated Contact Section",
+     "start": "2026-11-21",
+     "end": "2026-11-22",
+     "checked": 0,
+     "planned": 2
+    },
+    {
+     "name": "CV / LinkedIn / GitHub Integration",
+     "start": "2026-11-22",
+     "end": "2026-11-23",
+     "checked": 0,
+     "planned": 2
+    },
+    {
+     "name": "Multilingual Support",
+     "start": "2026-11-24",
+     "end": "2026-11-26",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Basic AI Chatbot",
+     "start": "2026-11-26",
+     "end": "2026-11-28",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Backend / Services",
+     "start": "2026-11-25",
+     "end": "2026-11-28",
+     "checked": 1,
+     "planned": 4
+    },
+    {
+     "name": "Testing & Quality Review",
+     "start": "2026-11-28",
+     "end": "2026-11-30",
+     "checked": 1,
+     "planned": 3
+    },
+    {
+     "name": "Final Documentation",
+     "start": "2026-11-29",
+     "end": "2026-11-30",
+     "checked": 0,
+     "planned": 2
+    },
+    {
+     "name": "Deployment",
+     "start": "2026-11-30",
+     "end": "2026-11-30",
+     "checked": 0,
+     "planned": 1
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "name": "4. Professional Profile",
+   "short": "Profile",
+   "color": "#FB4D3D",
+   "chart": "#FF6A5A",
+   "checked": 2,
+   "planned": 58,
+   "tasks": [
+    {
+     "name": "GitHub Portfolio Organisation",
+     "start": "2026-11-05",
+     "end": "2026-11-30",
+     "checked": 1,
+     "planned": 26
+    },
+    {
+     "name": "CV — Initial St. Gallen Alignment",
+     "start": "2026-11-06",
+     "end": "2026-11-06",
+     "checked": 0,
+     "planned": 1
+    },
+    {
+     "name": "LinkedIn — Initial Alignment with CV",
+     "start": "2026-11-06",
+     "end": "2026-11-06",
+     "checked": 0,
+     "planned": 1
+    },
+    {
+     "name": "Learning Evidence Collection",
+     "start": "2026-11-06",
+     "end": "2026-11-30",
+     "checked": 1,
+     "planned": 25
+    },
+    {
+     "name": "CV — Final Refinement",
+     "start": "2026-11-25",
+     "end": "2026-11-27",
+     "checked": 0,
+     "planned": 3
+    },
+    {
+     "name": "LinkedIn — Final Refinement",
+     "start": "2026-11-27",
+     "end": "2026-11-28",
+     "checked": 0,
+     "planned": 2
+    }
+   ]
+  },
+  {
+   "id": 5,
+   "name": "5. Application",
+   "short": "Application",
+   "color": "#CA1551",
+   "chart": "#E23A72",
+   "checked": 0,
+   "planned": 21,
+   "tasks": [
+    {
+     "name": "Verify Application Requirements",
+     "start": "2026-11-10",
+     "end": "2026-11-11",
+     "checked": 0,
+     "planned": 2
+    },
+    {
+     "name": "Prepare Online Application Answers",
+     "start": "2026-11-20",
+     "end": "2026-11-24",
+     "checked": 0,
+     "planned": 5
+    },
+    {
+     "name": "Prepare Powercoders Application",
+     "start": "2026-11-25",
+     "end": "2026-11-28",
+     "checked": 0,
+     "planned": 4
+    },
+    {
+     "name": "Interview Preparation — English",
+     "start": "2026-11-26",
+     "end": "2026-11-30",
+     "checked": 0,
+     "planned": 5
+    },
+    {
+     "name": "Final Application Review",
+     "start": "2026-12-01",
+     "end": "2026-12-03",
+     "checked": 0,
+     "planned": 3
+    },
+    {
+     "name": "Submit Powercoders Application",
+     "start": "2026-12-04",
+     "end": "2026-12-05",
+     "checked": 0,
+     "planned": 2
+    }
+   ]
+  },
+  {
+   "id": 6,
+   "name": "6. Consolidation / Continued Learning",
+   "short": "Consolidation",
+   "color": "#F59DBA",
+   "chart": "#F8B4CB",
+   "checked": 0,
+   "planned": 38,
+   "tasks": [
+    {
+     "name": "Consolidate Fundamentals",
+     "start": "2026-12-06",
+     "end": "2026-12-20",
+     "checked": 0,
+     "planned": 15
+    },
+    {
+     "name": "Portfolio Review",
+     "start": "2026-12-07",
+     "end": "2026-12-12",
+     "checked": 0,
+     "planned": 6
+    },
+    {
+     "name": "GitHub Review",
+     "start": "2026-12-13",
+     "end": "2026-12-18",
+     "checked": 0,
+     "planned": 6
+    },
+    {
+     "name": "Technical Review",
+     "start": "2026-12-19",
+     "end": "2026-12-24",
+     "checked": 0,
+     "planned": 6
+    },
+    {
+     "name": "Roadmap Evaluation",
+     "start": "2026-12-26",
+     "end": "2026-12-30",
+     "checked": 0,
+     "planned": 5
+    }
+   ]
+  }
+ ]
+}

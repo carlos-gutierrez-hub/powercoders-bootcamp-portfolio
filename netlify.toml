@@ -1,0 +1,6 @@
+[build]
+  publish = "web"
+
+# The dashboard is a static page: no build step, no framework.
+# Netlify serves web/ as the site root, so the page is / and the cached
+# snapshot is /data/datos.json.
