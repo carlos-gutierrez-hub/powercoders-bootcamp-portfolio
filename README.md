@@ -6,7 +6,9 @@ I am an Industrial Engineer transitioning into software development, focused on 
 
 ## What you'll find here
 
-- **`roadmap/`** — my preparation roadmap and task tracker: from the original Excel dashboard to its evolution into an interactive web version (the core evidence of this project).
+- **`web/`** — the live Task Tracker dashboard (Excel → Google Sheet → JSON → static HTML), deployed on Netlify.
+- **`docs/`** — the [PRD](docs/PRD.md) and the [dashboard architecture](docs/dashboard.md).
+- **`roadmap/`** — the preparation roadmap and its starting point: the original Excel dashboard, kept as evidence.
 - The **AI-assisted web portfolio** (in progress) demonstrating the methodology, organisation and problem-solving I will bring to the Bootcamp.
 
 ## The project
@@ -15,20 +17,24 @@ I am an Industrial Engineer transitioning into software development, focused on 
 
 **Approach:** I act as the "tech lead". I define requirements, architecture and the quality bar, while AI agents (Hermes + DeepSeek API + Antigravity) write the code and explain it to me. This mirrors exactly what Powercoders teaches: AI-assisted automation, no-code / low-code, and process thinking.
 
-**The evidence:** the "Task Tracker" began as a spreadsheet and will become an interactive dashboard. That evolution — Excel → HTML — is the proof of my methodology.
+**The evidence:** the "Task Tracker" began as a spreadsheet and now runs as a live dashboard. That evolution — Excel → Google Sheet → JSON → HTML — is the proof of my methodology.
 
-## Dashboard data — Excel → CSV
+## Live dashboard — Excel → Google Sheet → web
 
-The Task Tracker data lives in the Roadmap Tracker workbook (58 tasks across 6 categories, 25 Oct – 30 Dec). Because `.xlsx` is binary, GitHub only shows it as "modified" without a readable diff. To make the **evolution of the data visible line-by-line**, the tasks are exported to a text file:
+**https://carlosg-pc-roadmap-dashboard.netlify.app/** — the Task Tracker as a live page: 58 tasks, 6 categories, 259 planned days (25 Oct – 30 Dec 2026).
 
-- **`datos.csv`** — the 58 roadmap tasks (category, start/end date, status, progress), extracted from the Excel.
-- **`scripts/export_datos.py`** — read-only exporter (never modifies the Excel or its 17 charts).
+```
+Excel v2 (frozen) → Google Sheet (master) → Apps Script JSON → web/ (static HTML) → Netlify
+```
 
-**Workflow (after each edit to the Excel):**
+- The **Google Sheet** is where progress is updated: one checkbox per planned day. It is the single source of truth.
+- `apps-script/Code.gs` exposes it as a **read-only JSON endpoint** (`doGet` only, 60 s cache, JSONP for the browser).
+- `web/index.html` renders it with **no framework and no build step**, and falls back to the committed snapshot `web/data/datos.json` if the endpoint does not answer — the badge on the page says `Live`, `Cached` or `Sample data`.
+- `netlify.toml` publishes `web/` on every push to `master`.
 
-1. Edit and save `roadmap/Roadmap Tracker Powercoders_Bootcamp_Sp_2027_v2.xlsx`.
-2. Run `python scripts/export_datos.py` (regenerates `datos.csv`).
-3. Commit both files — GitHub diffs `datos.csv` line by line (red = removed, green = added).
+Architecture, JSON contract and the daily update loop: **[docs/dashboard.md](docs/dashboard.md)**.
+
+The workbook in `roadmap/` is kept as the historical starting point. `datos.csv` and `scripts/export_datos.py` are its legacy text export, kept so the early commits still diff line by line.
 
 ## Roadmap (six phases)
 
@@ -59,6 +65,7 @@ The Task Tracker data lives in the Roadmap Tracker workbook (58 tasks across 6 c
 
 - ✅ Roadmap defined (5 Nov 2026)
 - ✅ Dashboard Excel v2 finalized with dynamic formulas and data bars (9 Nov 2026)
+- ✅ Task Tracker live on Netlify, reading a Google Sheet through an Apps Script JSON endpoint (9 Nov 2026)
 - 🔄 Portfolio under construction (Nov 2026)
 - 🎯 Application window: 1 – 5 Dec 2026
 
