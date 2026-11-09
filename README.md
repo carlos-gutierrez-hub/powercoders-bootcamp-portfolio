@@ -7,7 +7,7 @@ I am an Industrial Engineer transitioning into software development, focused on 
 ## What you'll find here
 
 - **`web/`** — the live Task Tracker dashboard (Excel → Google Sheet → JSON → static HTML), deployed on Netlify.
-- **`docs/`** — the [PRD](docs/PRD.md) and the [dashboard architecture](docs/dashboard.md).
+- **`docs/`** — the [PRD](docs/PRD.md) (also in [Español](docs/PRD.es.md)) and the [dashboard architecture](docs/dashboard.md).
 - **`roadmap/`** — the preparation roadmap and its starting point: the original Excel dashboard, kept as evidence.
 - The **AI-assisted web portfolio** (in progress) demonstrating the methodology, organisation and problem-solving I will bring to the Bootcamp.
 
