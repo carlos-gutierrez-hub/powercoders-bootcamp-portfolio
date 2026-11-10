@@ -1,54 +1,245 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Carlos Gutiérrez — Portfolio (in progress)</title>
-<meta name="description" content="Portfolio under construction. The Task Tracker dashboard, built from Excel and a live Google Sheet, is already online.">
-<style>
-  :root{
-    --bg:#0B0E13; --surface:#111720; --line:#1E2632;
-    --txt:#E6EDF3; --muted:#9BA8B6; --accent:#03CEA4;
-    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans)}
-  body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px 20px}
-  .wrap{max-width:640px}
-  .eyebrow{font:11px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 18px}
-  h1{font-size:clamp(28px,6vw,40px);line-height:1.1;letter-spacing:-.02em;margin:0 0 14px;font-weight:600}
-  .lead{font-size:16px;line-height:1.65;color:#C3CED9;margin:0 0 28px}
-  nav{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
-  .btn{display:inline-block;padding:11px 16px;border-radius:9px;border:1px solid var(--line);
-       background:var(--surface);color:var(--txt);text-decoration:none;font-size:14px;
-       transition:border-color .15s ease,transform .15s ease}
-  .btn:hover{border-color:#2C3A4C;transform:translateY(-1px)}
-  .btn.primary{border-color:rgba(3,206,164,.4);color:#9FE3C8;background:rgba(3,206,164,.07)}
-  .note{font-size:12px;line-height:1.6;color:var(--muted);margin:0;max-width:60ch}
-  a{color:#9FE3C8}
-  :focus-visible{outline:2px solid #03CEA4;outline-offset:3px}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Carlos Gutiérrez — Powercoders Portfolio</title>
+  <meta name="description" content="Portfolio and preparation evidence for Powercoders Bootcamp Spring 2027 by Carlos Gutiérrez.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('pc-theme');
+        var p = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t || p);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
-<main class="wrap">
-  <p class="eyebrow">Powercoders Bootcamp · Spring 2027</p>
-  <h1>Carlos Gutiérrez</h1>
-  <p class="lead">
-    Industrial engineer moving into software development. This portfolio is being built in
-    public, one block at a time — the Task Tracker dashboard is already online.
-  </p>
-  <nav aria-label="Main links">
-    <a class="btn primary" href="dashboard/">Open the Task Tracker Dashboard</a>
-    <a class="btn" href="https://github.com/carlos-gutierrez-hub/powercoders-bootcamp-portfolio">Repository</a>
-    <a class="btn" href="https://www.linkedin.com/in/carlos-guti%C3%A9rrez-9200681b7">LinkedIn</a>
-  </nav>
-  <p class="note">
-    Temporary page. It will be replaced by the multilingual portfolio
-    (Home · About · Dashboard · Projects · Contact) in the next block.
-    <br>
-    Página provisional. Será reemplazada por el portafolio en cuatro idiomas en el próximo bloque.
-  </p>
-</main>
+  <a href="#main" class="skip-link" data-i18n="nav.skip">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a href="#home" class="brand" data-i18n="nav.brand">Carlos Gutiérrez</a>
+
+      <nav id="primary-nav" class="primary-nav" aria-label="Main navigation">
+        <a href="#home" class="nav-link" data-i18n="nav.home">Home</a>
+        <a href="#about" class="nav-link" data-i18n="nav.about">About</a>
+        <a href="dashboard/index.html" class="nav-link" data-i18n="nav.dashboard">Task Tracker</a>
+        <a href="#projects" class="nav-link" data-i18n="nav.projects">Projects</a>
+        <a href="#contact" class="nav-link" data-i18n="nav.contact">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <select id="lang-select" class="lang-select" aria-label="Select language" data-i18n-aria-label="nav.lang_select">
+          <option value="en">EN</option>
+          <option value="es">ES</option>
+          <option value="fr">FR</option>
+          <option value="de">DE</option>
+        </select>
+
+        <button type="button" id="theme-toggle" class="btn-icon theme-toggle" aria-pressed="false" aria-label="Toggle dark/light theme" data-i18n-aria-label="nav.theme_toggle">
+          <span class="icon-sun" aria-hidden="true">☀️</span>
+          <span class="icon-moon" aria-hidden="true">🌙</span>
+        </button>
+
+        <button type="button" id="menu-toggle" class="btn-icon menu-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation menu" data-i18n-aria-label="nav.menu_toggle">
+          <span aria-hidden="true">☰</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Section 1: Home / Hero -->
+    <section id="home" class="section hero-section">
+      <div class="wrap hero-wrap">
+        <div class="hero-content">
+          <div class="hero-text">
+            <p class="eyebrow" data-i18n="hero.eyebrow">Powercoders Bootcamp · Spring 2027</p>
+            <h1 class="hero-title" data-i18n="hero.title">Carlos Gutiérrez</h1>
+            <p class="hero-sub" data-i18n="hero.subtitle">Industrial Engineer transitioning into Software Development</p>
+            <p class="hero-lead" data-i18n="hero.lead">Building a transparent, evidence-based preparation journey for the Powercoders application in Zurich. Demonstrating engineering methodology, systematic task tracking, and rapid adoption of web technologies.</p>
+            <div class="btn-group">
+              <a href="dashboard/index.html" class="btn btn-primary" data-i18n="hero.cta_dashboard">Open Task Tracker</a>
+              <a href="#projects" class="btn btn-secondary" data-i18n="hero.cta_projects">View Projects</a>
+              <a href="assets/CV_Carlos_Gutierrez.pdf" download="CV_Carlos_Gutierrez.pdf" class="btn btn-outline" data-i18n="hero.cta_cv">Download CV (PDF)</a>
+            </div>
+          </div>
+          <div class="hero-avatar-wrap">
+            <img src="assets/img/foto_perfil.jpg" alt="Carlos Gutiérrez" class="hero-avatar" width="190" height="190">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: About Me -->
+    <section id="about" class="section about-section">
+      <div class="wrap">
+        <p class="eyebrow" data-i18n="about.eyebrow">Background & Transition</p>
+        <h2 class="section-title" data-i18n="about.title">About Me</h2>
+        <p class="section-lead" data-i18n="about.lead">From industrial engineering in Nicaragua to tech in Switzerland: solving complex problems with structured processes and software.</p>
+
+        <div class="card-grid">
+          <article class="card">
+            <h3 class="card-title" data-i18n="about.card1_title">Engineering Mindset</h3>
+            <p class="card-body" data-i18n="about.card1_body">Process optimization, root-cause analysis, and systematic problem solving applied to modern software engineering.</p>
+          </article>
+          <article class="card">
+            <h3 class="card-title" data-i18n="about.card2_title">Powercoders Journey</h3>
+            <p class="card-body" data-i18n="about.card2_body">Dedicated preparation track covering web fundamentals (HTML, CSS, JS), version control, and full-stack development practices.</p>
+          </article>
+          <article class="card">
+            <h3 class="card-title" data-i18n="about.card3_title">Multilingual & Adaptable</h3>
+            <p class="card-body" data-i18n="about.card3_body">Native Spanish, fluent French, professional English, and conversational German (B2), thriving in multicultural technical teams.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Task Tracker Dashboard -->
+    <section id="dashboard" class="section dashboard-section">
+      <div class="wrap">
+        <p class="eyebrow" data-i18n="dashboard.eyebrow">Live Preparation Evidence</p>
+        <h2 class="section-title" data-i18n="dashboard.title">Task Tracker Dashboard</h2>
+        <p class="section-lead" data-i18n="dashboard.lead">An interactive progress tracker migrated from an Excel workbook with 90+ charts to an autonomous web dashboard connected to a live Google Sheet via Apps Script.</p>
+
+        <div class="dashboard-box">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-label" data-i18n="dashboard.stat1_label">Evolution</span>
+              <span class="stat-value" data-i18n="dashboard.stat1_value">Excel → Web</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label" data-i18n="dashboard.stat2_label">Data Source</span>
+              <span class="stat-value" data-i18n="dashboard.stat2_value">Google Sheets API</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label" data-i18n="dashboard.stat3_label">Architecture</span>
+              <span class="stat-value" data-i18n="dashboard.stat3_value">100% Client-side</span>
+            </div>
+          </div>
+          <div class="btn-group">
+            <a href="dashboard/index.html" class="btn btn-primary" data-i18n="dashboard.cta">Launch Interactive Dashboard</a>
+          </div>
+          <p class="section-note" data-i18n="dashboard.note">The dashboard runs independently at /dashboard/ with offline fallback snapshot support.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Projects -->
+    <section id="projects" class="section projects-section">
+      <div class="wrap">
+        <p class="eyebrow" data-i18n="projects.eyebrow">Technical Portfolio</p>
+        <h2 class="section-title" data-i18n="projects.title">Projects & Deliverables</h2>
+        <p class="section-lead" data-i18n="projects.lead">Practical implementations demonstrating front-end architecture, automation scripts, and agile workflow management.</p>
+
+        <div class="card-grid">
+          <article class="card">
+            <h3 class="card-title" data-i18n="projects.item1_title">Task Tracker Web Dashboard</h3>
+            <p class="card-body" data-i18n="projects.item1_desc">Single-page responsive dashboard consuming Google Apps Script JSON with offline JSON snapshot fallback.</p>
+            <div class="card-footer">
+              <span class="tag" data-i18n="projects.item1_tag">Vanilla JS · CSS Grid · Apps Script</span>
+              <a href="dashboard/index.html" class="card-link" data-i18n="projects.view_dashboard">Open Dashboard →</a>
+            </div>
+          </article>
+          <article class="card">
+            <h3 class="card-title" data-i18n="projects.item2_title">Multilingual Application Portfolio</h3>
+            <p class="card-body" data-i18n="projects.item2_desc">Responsive 4-language portfolio built with zero dependencies, CSS variables, and full accessibility.</p>
+            <div class="card-footer">
+              <span class="tag" data-i18n="projects.item2_tag">Semantic HTML5 · CSS Tokens · i18n</span>
+              <a href="https://github.com/carlos-gutierrez-hub/powercoders-bootcamp-portfolio" class="card-link" target="_blank" rel="noopener noreferrer" data-i18n="projects.view_repo">View Repository →</a>
+            </div>
+          </article>
+          <article class="card">
+            <h3 class="card-title" data-i18n="projects.item3_title">Excel COM Automation Pipeline</h3>
+            <p class="card-body" data-i18n="projects.item3_desc">Python COM pipeline preserving embedded charts while synchronizing task data across spreadsheets and repositories.</p>
+            <div class="card-footer">
+              <span class="tag" data-i18n="projects.item3_tag">Python · Excel COM · Automation</span>
+              <a href="https://github.com/carlos-gutierrez-hub/powercoders-bootcamp-portfolio/blob/master/scripts/export_datos.py" class="card-link" target="_blank" rel="noopener noreferrer" data-i18n="projects.view_script">View Script →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Contact -->
+    <section id="contact" class="section contact-section">
+      <div class="wrap">
+        <p class="eyebrow" data-i18n="contact.eyebrow">Connect</p>
+        <h2 class="section-title" data-i18n="contact.title">Get in Touch</h2>
+        <p class="section-lead" data-i18n="contact.lead">I am actively preparing for the Powercoders Spring 2027 cohort in Zurich and welcome technical discussions, mentorship, or interview opportunities.</p>
+
+        <div class="contact-layout">
+          <form class="contact-form" onsubmit="event.preventDefault();">
+            <div class="form-group">
+              <label for="contact-name" data-i18n="contact.name_label">Your Name</label>
+              <input type="text" id="contact-name" name="name" class="form-input" data-i18n-placeholder="contact.name_placeholder" placeholder="e.g. Jane Doe" autocomplete="name">
+            </div>
+
+            <div class="form-group">
+              <label for="contact-email" data-i18n="contact.email_label">Your Email</label>
+              <input type="email" id="contact-email" name="email" class="form-input" data-i18n-placeholder="contact.email_placeholder" placeholder="jane@example.com" autocomplete="email">
+            </div>
+
+            <div class="form-group">
+              <label for="contact-message" data-i18n="contact.message_label">Message</label>
+              <textarea id="contact-message" name="message" class="form-textarea" rows="4" data-i18n-placeholder="contact.message_placeholder" placeholder="Write your message here..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary" data-i18n="contact.submit">Send Message</button>
+            <p class="form-note" data-i18n="contact.form_note">Contact form will be enabled with Netlify Forms in an upcoming block.</p>
+          </form>
+
+          <aside class="contact-sidebar">
+            <div class="card">
+              <h3 class="card-title" data-i18n="contact.links_title">Direct Links</h3>
+              <ul class="direct-links">
+                <li class="direct-link-item">
+                  <a href="https://github.com/carlos-gutierrez-hub/powercoders-bootcamp-portfolio" target="_blank" rel="noopener noreferrer" class="social-link github-link">
+                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                    </svg>
+                    <span class="social-text">GitHub /powercoders-bootcamp-portfolio</span>
+                    <span class="link-arrow" aria-hidden="true">↗</span>
+                  </a>
+                </li>
+                <li class="direct-link-item">
+                  <a href="https://www.linkedin.com/in/carlos-gutierrez-lacayo/" target="_blank" rel="noopener noreferrer" class="social-link linkedin-link">
+                    <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.79v8.37H6.46v-8.37M7.86 6.55a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/>
+                    </svg>
+                    <span class="social-text">LinkedIn /in/carlos-gutierrez-lacayo</span>
+                    <span class="link-arrow" aria-hidden="true">↗</span>
+                  </a>
+                </li>
+              </ul>
+              <div class="btn-group">
+                <a href="assets/CV_Carlos_Gutierrez.pdf" download="CV_Carlos_Gutierrez.pdf" class="btn btn-secondary" data-i18n="contact.cv_download">Download CV (PDF)</a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p class="footer-tagline" data-i18n="footer.tagline">Powercoders Spring 2027 Application Portfolio · Built with vanilla web standards.</p>
+      <nav class="footer-nav" aria-label="Footer links">
+        <a href="#home" data-i18n="footer.back_to_top">Back to top ↑</a>
+        <a href="dashboard/" data-i18n="nav.dashboard">Task Tracker</a>
+        <a href="https://github.com/carlos-gutierrez-hub/powercoders-bootcamp-portfolio" target="_blank" rel="noopener noreferrer" data-i18n="footer.github">GitHub</a>
+        <a href="https://www.linkedin.com/in/carlos-gutierrez-lacayo/" target="_blank" rel="noopener noreferrer" data-i18n="footer.linkedin">LinkedIn</a>
+      </nav>
+      <p class="footer-rights" data-i18n="footer.rights">© 2026 Carlos Gutiérrez. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
