@@ -644,6 +644,17 @@ a:hover {
   line-height: 1.5;
 }
 
+/* Netlify honeypot (form field "bot-field"): pushed off-canvas instead of
+   display:none, so it costs no layout, stays invisible, and still looks like a
+   real field to a bot parsing the markup. */
+.hp-field {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .contact-sidebar {
   display: flex;
   flex-direction: column;

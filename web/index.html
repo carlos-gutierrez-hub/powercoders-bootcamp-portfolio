@@ -173,8 +173,14 @@
         <p class="section-lead" data-i18n="contact.lead">I am actively preparing for the Powercoders Spring 2027 cohort in Zurich and welcome technical discussions, mentorship, or interview opportunities.</p>
 
         <div class="contact-layout">
-          <form name="contacto-portafolio" method="POST" data-netlify="true" class="contact-form">
+          <form name="contacto-portafolio" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="contact-form">
             <input type="hidden" name="form-name" value="contacto-portafolio">
+            <!-- Netlify honeypot: hidden from humans and from tab order, irresistible to bots.
+                 Any submission where bot-field is filled is silently discarded as spam. -->
+            <p class="hp-field" aria-hidden="true">
+              <label for="bot-field">Leave this field empty</label>
+              <input type="text" id="bot-field" name="bot-field" tabindex="-1" autocomplete="off">
+            </p>
             <div class="form-group">
               <label for="contact-name" data-i18n="contact.name_label">Your Name</label>
               <input type="text" id="contact-name" name="nombre" class="form-input" data-i18n-placeholder="contact.name_placeholder" placeholder="e.g. Jane Doe" autocomplete="name" required>

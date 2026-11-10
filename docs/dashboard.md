@@ -104,3 +104,55 @@ Both are documented in detail in the local learning log (`Bitácora Dashboard We
 **Daylight saving, 25 October 2026.** The grid was built by adding 86 400 000 ms per column. Switzerland switches clocks that day (a 25-hour day), so the second column landed at 23:00 of the first date: one date duplicated, one day missing at the end, and every header one day early. Fix: build dates from calendar parts (`new Date(y, m, d + i)`) and compare with `Date.UTC`; `verifyGrid_()` now reads the grid back and fails loudly instead of writing a grid that looks fine.
 
 **One global scope in Apps Script.** All files in a project share the global namespace, so `const META_COLS` in two files is a redeclaration error — served as an HTTP 200 HTML page, not as a JSON error. Fix: the endpoint is wrapped in an IIFE and exposes only `doGet` and `logPayload`.
+
+## 8. The portfolio site and the contact form
+
+`web/` holds two independent surfaces: the portfolio at `/` (`web/index.html` + `web/assets/`) and this dashboard at `/dashboard/`. The portfolio is a static page with no framework; its conventions live in `AGENTS.md`.
+
+**The form.** `name="contacto-portafolio"`, `method="POST"`, no `action` (it posts to the page itself), `data-netlify="true"` and a hidden `form-name` input that must match the form's name. Fields: `nombre`, `email`, `mensaje`, all `required`. Submissions land in *Netlify → Forms → contacto-portafolio*, where they can be read or exported as CSV.
+
+**Anti-spam.** `netlify-honeypot="bot-field"` plus an input named `bot-field` that humans never see: `.hp-field` in the CSS pushes it off-canvas (not `display:none`, so a bot parsing the markup still finds a plausible field), it is `aria-hidden` and `tabindex="-1"`. Netlify accepts any submission but files as spam the ones where `bot-field` arrived filled.
+
+**Proving that Netlify registered the form.** The only reliable test is a real POST, compared against a control:
+
+```bash
+SITE=https://carlosg-pc-roadmap-dashboard.netlify.app
+
+# registered form → 200
+curl -s -o /dev/null -w 'real:  %{http_code}\n' -X POST "$SITE/" \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'form-name=contacto-portafolio' \
+  --data-urlencode 'nombre=TEST — delete me' \
+  --data-urlencode 'email=test@example.com' \
+  --data-urlencode 'mensaje=verification'
+
+# unknown form name → 404
+curl -s -o /dev/null -w 'control: %{http_code}\n' -X POST "$SITE/" \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data 'form-name=no-existe-xyz&a=1'
+```
+
+Each real POST creates an entry in the dashboard — delete the test row afterwards.
+
+**Detection runs at build time.** A new form, a renamed field or a new `netlify-honeypot` attribute only takes effect on the next deploy. Turning "Form detection" **on** also requires a fresh deploy: existing deploys are not re-scanned, so the form can be live in the HTML and still unknown to Netlify.
+
+## 9. Netlify rewrites the HTML it serves
+
+The file in the repo and the file the browser receives are not the same. To see it:
+
+```bash
+curl -s https://carlosg-pc-roadmap-dashboard.netlify.app/ > /tmp/live.html
+diff <(sed 's/\r$//' /tmp/live.html) <(git show HEAD:web/index.html | sed 's/\r$//')
+```
+
+As of 10 Nov 2026 the served page differs in about a dozen lines, all of them Netlify's doing:
+
+- injects a promotional comment in `<head>` and a `/.netlify/scripts/hud` script before `</body>`;
+- rewrites `href="dashboard/index.html"` to `href="/dashboard/"`;
+- reorders attributes and switches them to single quotes (minifier);
+- **drops `data-netlify="true"` from the `<form>`.**
+
+Two consequences worth remembering:
+
+1. Never judge whether the form is registered by reading the live HTML, and never "fix" the live HTML — the repo file is the source of truth. The POST test in §8 is the proof.
+2. To check whether a deploy actually landed, poll for content Netlify does not touch (copy, images, CSS values), not for attributes it rewrites. That is how every deploy in this repo has been verified.
