@@ -80,7 +80,7 @@
       'contact.message_label': 'Message',
       'contact.message_placeholder': 'Write your message here...',
       'contact.submit': 'Send Message',
-      'contact.form_note': 'Contact form will be enabled with Netlify Forms in an upcoming block.',
+      'contact.form_note': 'Your message goes straight to my inbox — no account needed.',
       'contact.cv_download': 'Download CV (PDF)',
       'contact.links_title': 'Direct Links',
 
@@ -159,7 +159,7 @@
       'contact.message_label': 'Mensaje',
       'contact.message_placeholder': 'Escribe tu mensaje aquí...',
       'contact.submit': 'Enviar mensaje',
-      'contact.form_note': 'El formulario de contacto se activará con Netlify Forms en el próximo bloque.',
+      'contact.form_note': 'Tu mensaje llega directamente a mi bandeja de entrada — sin registro.',
       'contact.cv_download': 'Descargar CV (PDF)',
       'contact.links_title': 'Enlaces directos',
 
@@ -238,7 +238,7 @@
       'contact.message_label': 'Message',
       'contact.message_placeholder': 'Écrivez votre message ici...',
       'contact.submit': 'Envoyer le message',
-      'contact.form_note': 'Le formulaire de contact sera activé avec Netlify Forms dans un prochain bloc.',
+      'contact.form_note': 'Votre message arrive directement dans ma boîte de réception — sans compte.',
       'contact.cv_download': 'Télécharger le CV (PDF)',
       'contact.links_title': 'Liens directs',
 
@@ -317,7 +317,7 @@
       'contact.message_label': 'Nachricht',
       'contact.message_placeholder': 'Schreiben Sie Ihre Nachricht hier...',
       'contact.submit': 'Nachricht senden',
-      'contact.form_note': 'Das Kontaktformular wird in einem kommenden Block über Netlify Forms aktiviert.',
+      'contact.form_note': 'Ihre Nachricht landet direkt in meinem Postfach — ohne Anmeldung.',
       'contact.cv_download': 'CV herunterladen (PDF)',
       'contact.links_title': 'Direkte Links',
 
