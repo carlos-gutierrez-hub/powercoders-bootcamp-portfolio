@@ -77,7 +77,7 @@ The workbook in `roadmap/` is kept as the historical starting point. `datos.csv`
 
 **Links**
 
-- LinkedIn: [Carlos Gutiérrez](https://www.linkedin.com/in/carlos-guti%C3%A9rrez-9200681b7)
+- LinkedIn: [Carlos Gutiérrez](https://www.linkedin.com/in/carlos-guti%C3%A9rrez-9200681b7/)
 - GitHub: [@carlos-gutierrez-hub](https://github.com/carlos-gutierrez-hub)
 
 *This repository is part of my application to the Powercoders Bootcamp.*

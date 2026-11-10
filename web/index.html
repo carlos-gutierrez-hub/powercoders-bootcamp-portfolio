@@ -173,20 +173,21 @@
         <p class="section-lead" data-i18n="contact.lead">I am actively preparing for the Powercoders Spring 2027 cohort in Zurich and welcome technical discussions, mentorship, or interview opportunities.</p>
 
         <div class="contact-layout">
-          <form class="contact-form" onsubmit="event.preventDefault();">
+          <form name="contacto-portafolio" method="POST" data-netlify="true" class="contact-form">
+            <input type="hidden" name="form-name" value="contacto-portafolio">
             <div class="form-group">
               <label for="contact-name" data-i18n="contact.name_label">Your Name</label>
-              <input type="text" id="contact-name" name="name" class="form-input" data-i18n-placeholder="contact.name_placeholder" placeholder="e.g. Jane Doe" autocomplete="name">
+              <input type="text" id="contact-name" name="nombre" class="form-input" data-i18n-placeholder="contact.name_placeholder" placeholder="e.g. Jane Doe" autocomplete="name" required>
             </div>
 
             <div class="form-group">
               <label for="contact-email" data-i18n="contact.email_label">Your Email</label>
-              <input type="email" id="contact-email" name="email" class="form-input" data-i18n-placeholder="contact.email_placeholder" placeholder="jane@example.com" autocomplete="email">
+              <input type="email" id="contact-email" name="email" class="form-input" data-i18n-placeholder="contact.email_placeholder" placeholder="jane@example.com" autocomplete="email" required>
             </div>
 
             <div class="form-group">
               <label for="contact-message" data-i18n="contact.message_label">Message</label>
-              <textarea id="contact-message" name="message" class="form-textarea" rows="4" data-i18n-placeholder="contact.message_placeholder" placeholder="Write your message here..."></textarea>
+              <textarea id="contact-message" name="mensaje" class="form-textarea" rows="4" data-i18n-placeholder="contact.message_placeholder" placeholder="Write your message here..." required></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary" data-i18n="contact.submit">Send Message</button>
@@ -207,11 +208,11 @@
                   </a>
                 </li>
                 <li class="direct-link-item">
-                  <a href="https://www.linkedin.com/in/carlos-gutierrez-lacayo/" target="_blank" rel="noopener noreferrer" class="social-link linkedin-link">
+                  <a href="https://www.linkedin.com/in/carlos-guti%C3%A9rrez-9200681b7/" target="_blank" rel="noopener noreferrer" class="social-link linkedin-link">
                     <svg class="social-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9h2.79v8.37H6.46v-8.37M7.86 6.55a1.62 1.62 0 1 0 0 3.24 1.62 1.62 0 0 0 0-3.24z"/>
                     </svg>
-                    <span class="social-text">LinkedIn /in/carlos-gutierrez-lacayo</span>
+                    <span class="social-text">LinkedIn /in/carlos-gutiérrez</span>
                     <span class="link-arrow" aria-hidden="true">↗</span>
                   </a>
                 </li>
@@ -233,7 +234,7 @@
         <a href="#home" data-i18n="footer.back_to_top">Back to top ↑</a>
         <a href="dashboard/" data-i18n="nav.dashboard">Task Tracker</a>
         <a href="https://github.com/carlos-gutierrez-hub/powercoders-bootcamp-portfolio" target="_blank" rel="noopener noreferrer" data-i18n="footer.github">GitHub</a>
-        <a href="https://www.linkedin.com/in/carlos-gutierrez-lacayo/" target="_blank" rel="noopener noreferrer" data-i18n="footer.linkedin">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/carlos-guti%C3%A9rrez-9200681b7/" target="_blank" rel="noopener noreferrer" data-i18n="footer.linkedin">LinkedIn</a>
       </nav>
       <p class="footer-rights" data-i18n="footer.rights">© 2026 Carlos Gutiérrez. All rights reserved.</p>
     </div>
