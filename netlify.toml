@@ -1,6 +1,12 @@
 [build]
   publish = "web"
 
-# The dashboard is a static page: no build step, no framework.
-# Netlify serves web/ as the site root, so the page is / and the cached
-# snapshot is /data/datos.json.
+# Netlify serves web/ as the site root. No build step, no framework, no npm.
+#
+#   /                              → web/index.html            portfolio home (in progress)
+#   /dashboard/                    → web/dashboard/index.html  Task Tracker (live)
+#   /dashboard/data/datos.json     → committed snapshot, fallback when the endpoint fails
+#   /assets/css|js|img/            → web/assets/               shared portfolio assets
+#
+# Every push to master redeploys. The dashboard is self-contained: one HTML file,
+# no external asset, so it keeps working at any depth.

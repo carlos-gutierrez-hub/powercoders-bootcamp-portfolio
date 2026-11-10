@@ -21,8 +21,8 @@ kept as evidence            = the single source          60 s cache          no 
 | 1. Excel v2 | `roadmap/Roadmap Tracker Powercoders_Bootcamp_Sp_2027_v2.xlsx` | **Historical evidence.** 58 tasks, 259 checkboxes, 17 charts. No longer edited for daily work |
 | 2. Google Sheet | `Tracker` tab of a spreadsheet in Drive | **Master.** The only place where progress is updated: tick the days you worked |
 | 3. Apps Script | `apps-script/Code.gs`, deployed as a web app | Read-only JSON endpoint. `doGet()` only — there is no `doPost()` |
-| 4. Web page | `web/index.html` + `web/data/datos.json` | Static HTML/CSS/JS, no framework, no build step |
-| 5. Netlify | `netlify.toml` → `publish = "web"` | Serves the folder as the site root; every push to `master` redeploys |
+| 4. Web page | `web/dashboard/index.html` + `web/dashboard/data/datos.json` | Static HTML/CSS/JS, no framework, no build step. Served at `/dashboard/` |
+| 5. Netlify | `netlify.toml` → `publish = "web"` | Serves `web/` as the site root — `/` is the portfolio, `/dashboard/` is this page. Every push to `master` redeploys |
 
 Nothing is duplicated: the Sheet holds the state, the endpoint derives every number, the page only draws.
 
@@ -35,7 +35,7 @@ Nothing is duplicated: the Sheet holds the state, the endpoint derives every num
 
 ## 3. The data contract
 
-`Code.gs` returns exactly this shape (and `web/data/datos.json` is a snapshot of it):
+`Code.gs` returns exactly this shape (and `web/dashboard/data/datos.json` is a snapshot of it):
 
 ```json
 {
@@ -69,7 +69,7 @@ No export, no commit, no deploy for data changes. The repo only changes when the
 **To keep the repo honest**, refresh the snapshot when the numbers matter (a weekly rhythm is enough):
 
 ```bash
-curl -s "<exec-url>" -o web/data/datos.json   # then: git add web/data/datos.json && git commit
+curl -s "<exec-url>" -o web/dashboard/data/datos.json   # then: git add web/dashboard/data/datos.json && git commit
 ```
 
 ## 5. Endpoints and deployment
@@ -89,8 +89,9 @@ curl -s "<exec-url>" -o web/data/datos.json   # then: git add web/data/datos.jso
 
 | File | What it is |
 |---|---|
-| `web/index.html` | The dashboard: one file, no dependencies. `ENDPOINT` at the top points to the endpoint |
-| `web/data/datos.json` | Committed snapshot, used when the endpoint does not answer |
+| `web/dashboard/index.html` | The dashboard: one file, no dependencies. `ENDPOINT` at the top points to the endpoint |
+| `web/dashboard/data/datos.json` | Committed snapshot, used when the endpoint does not answer |
+| `web/index.html` + `web/assets/` | The portfolio itself (root `/`), built in its own blocks — independent of this page |
 | `netlify.toml` | `[build] publish = "web"` |
 | `apps-script/buildTracker.gs` | One-time migration: builds the `Tracker` tab, 58 tasks, one checkbox per planned day, and verifies the result |
 | `apps-script/Code.gs` | The JSON endpoint (read-only), with cache, JSONP and debug mode |

@@ -2,7 +2,7 @@
  * Code.gs — read-only JSON endpoint for the roadmap dashboard.
  *
  * Reads the "Tracker" tab of THIS spreadsheet and returns the payload that
- * web/index.html already consumes. Nothing is written; there is no doPost().
+ * web/dashboard/index.html already consumes. Nothing is written; there is no doPost().
  *
  * DEPLOY
  *   1. Extensions → Apps Script (same project as buildTracker.gs) → paste this file.
