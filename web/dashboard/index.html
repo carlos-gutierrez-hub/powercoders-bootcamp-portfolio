@@ -82,11 +82,20 @@
     table{font-size:11px}
     th:nth-child(3),td:nth-child(3){display:none}
   }
+  .nav-back{margin-bottom:14px}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;font:500 12px/1 var(--sans);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 12px;text-decoration:none;transition:color .15s ease,border-color .15s ease,background .15s ease,transform .15s ease}
+  .back-btn:hover{color:var(--txt);border-color:#2C3A4C;background:var(--surface-2);transform:translateX(-2px);text-decoration:none}
+  .back-btn:focus-visible{outline:2px solid #03CEA4;outline-offset:2px}
 </style>
 </head>
 <body>
-<div class="wrap" id="app">
-  <p class="sub">Loading roadmap…</p>
+<div class="wrap">
+  <div class="nav-back">
+    <a href="../index.html" class="back-btn">← Back to Portfolio</a>
+  </div>
+  <div id="app">
+    <p class="sub">Loading roadmap…</p>
+  </div>
 </div>
 
 <script>
